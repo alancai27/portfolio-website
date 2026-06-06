@@ -745,7 +745,7 @@ function initCursor() {
   document.addEventListener("mouseleave", () => { cell.style.opacity = "0"; dot.style.opacity = "0"; });
   document.addEventListener("mouseenter", () => { cell.style.opacity = ""; dot.style.opacity = ""; });
 
-  const HOT = "a, button, [data-link], .proj-card, .featured-slide, .featured-btn, .social, input, textarea";
+  const HOT = "a, button, [data-link], .proj-card, .featured-slide, .featured-btn, .skill-card-link, .social, input, textarea";
   document.addEventListener("mouseover", (e) => {
     if (e.target.closest && e.target.closest(HOT)) root.classList.add("cursor-hot");
   });
