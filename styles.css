@@ -515,12 +515,27 @@ main { position: relative; z-index: 3; }
   gap: clamp(36px, 6vw, 72px);
   align-items: start;
 }
+.about-timeline-viewport {
+  overflow: hidden;
+  max-height: min(560px, calc(100vh - var(--nav-h) - 160px));
+}
+.about-timeline-track {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  will-change: transform;
+}
+.about-timeline-track .about-side-title {
+  margin-bottom: 0;
+}
 
 .about-portrait {
   display: block;
   width: 100%;
-  height: 375px;
+  height: 260px;
   background: var(--white);
+  transform: scale(1.38);
+  transform-origin: center center;
 }
 .portrait-frame {
   width: min(300px, 100%);
@@ -960,6 +975,8 @@ main { position: relative; z-index: 3; }
    ================================================================= */
 @media (max-width: 1000px) {
   .about-grid { grid-template-columns: 1fr; }
+  .about-timeline-viewport { overflow: visible; max-height: none; }
+  .about-timeline-track { will-change: auto; transform: none !important; }
   .about-side { max-width: 520px; }
   .projects { grid-template-columns: repeat(2, 1fr); }
   .skill-row { grid-template-columns: 1fr; gap: 14px; }

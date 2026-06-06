@@ -133,6 +133,9 @@ function boot(titleEl) {
   if (typeof window.initHeroScroll === "function") {
     window.initHeroScroll(titleEl);
   }
+  if (window.portfolioAboutTimelineRefresh) {
+    requestAnimationFrame(() => window.portfolioAboutTimelineRefresh());
+  }
 }
 
 /* ================================================================= */
@@ -288,15 +291,108 @@ function initLenis() {
 
   // drive Lenis with GSAP ticker, sync ScrollTrigger
   if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.scrollerProxy(document.documentElement, {
+      scrollTop(value) {
+        if (arguments.length) lenis.scrollTo(value, { immediate: true });
+        return lenis.scroll ?? window.scrollY;
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
+    });
+    ScrollTrigger.defaults({ scroller: document.documentElement });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
+    ScrollTrigger.addEventListener("refresh", () => lenis.resize());
   } else {
     function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
   }
 
   initAnchors(lenis);
+}
+
+/* ================================================================= */
+/*  ABOUT — wheel scrolls timeline while in section (desktop)        */
+/* ================================================================= */
+function initAboutTimelineScroll() {
+  if (REDUCED) return;
+
+  const mq = window.matchMedia("(min-width: 1001px)");
+  const about = document.getElementById("about");
+  const track = document.querySelector(".about-timeline-track");
+  const viewport = document.querySelector(".about-timeline-viewport");
+  if (!about || !track || !viewport) return;
+
+  const NAV = 64;
+  let offset = 0;
+  let range = 0;
+  let resizeTimer = 0;
+
+  function measure() {
+    range = Math.max(0, track.offsetHeight - viewport.clientHeight);
+    offset = Math.min(offset, range);
+    apply();
+  }
+
+  function apply() {
+    track.style.transform = offset > 0 ? "translateY(" + (-offset) + "px)" : "";
+  }
+
+  function inZone() {
+    if (!mq.matches || range <= 0) return false;
+    const r = about.getBoundingClientRect();
+    return r.top <= NAV + 24 && r.bottom > window.innerHeight * 0.4;
+  }
+
+  function onWheel(e) {
+    if (!mq.matches || range <= 0 || !inZone()) return;
+
+    const dy = e.deltaY;
+    const lenis = window.portfolioLenis;
+    const consume = (dy > 0 && offset < range - 1) || (dy < 0 && offset > 1);
+    if (!consume) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    if (lenis) lenis.scrollTo(lenis.scroll, { immediate: true });
+    offset = Math.max(0, Math.min(range, offset + dy));
+    apply();
+  }
+
+  function onPageScroll() {
+    const r = about.getBoundingClientRect();
+    if (r.top > window.innerHeight) {
+      offset = 0;
+      apply();
+    } else if (r.bottom < 0) {
+      offset = range;
+      apply();
+    }
+  }
+
+  window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+  if (window.portfolioLenis) {
+    window.portfolioLenis.on("scroll", onPageScroll);
+  } else {
+    window.addEventListener("scroll", onPageScroll, { passive: true });
+  }
+
+  measure();
+  window.portfolioAboutTimelineRefresh = measure;
+  mq.addEventListener("change", measure);
+  window.addEventListener("load", measure);
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measure, 180);
+  });
 }
 
 function initAnchors(lenis) {
@@ -382,8 +478,12 @@ window.portfolioAboutReveal = (function () {
       } else if (el) {
         el.textContent = el.getAttribute("data-decode");
       }
-      // stagger the about reveals
       document.querySelectorAll("#about .reveal").forEach((r) => r.classList.add("in"));
+      if (window.portfolioAboutTimelineRefresh) {
+        requestAnimationFrame(() => {
+          window.portfolioAboutTimelineRefresh();
+        });
+      }
     },
     reset() {
       decoded = false;
@@ -467,6 +567,7 @@ function initCursor() {
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   initLenis();
+  initAboutTimelineScroll();
   initTypewriter();
   initReveals();
   initCardHover();
