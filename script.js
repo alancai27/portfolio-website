@@ -182,16 +182,32 @@ function initTypewriter() {
 }
 
 /* ================================================================= */
-/*  REVEALS — scroll-position driven (IntersectionObserver is         */
-/*  unreliable inside the preview iframe, so we check rects on scroll) */
+/*  REVEALS + HEADING SCRAMBLE — scroll-position driven               */
 /* ================================================================= */
+const REVEAL_SEL = "#about .reveal:not(.about-timeline-item), #projects .reveal, #skills .reveal, #contact .reveal";
+const HEADING_DECODE_SEL = ".heading-decode[data-decode]";
+
+function scrambleHeading(el, decoded) {
+  if (decoded.has(el)) return;
+  decoded.add(el);
+  const text = el.getAttribute("data-decode");
+  if (!text) return;
+  if (REDUCED) {
+    el.textContent = text;
+    return;
+  }
+  new Scrambler(el, { text, seq: true, speed: 26, settle: 2 }).run();
+}
+
+function canRevealInAbout(el) {
+  if (!el.closest("#about")) return true;
+  const about = document.getElementById("about");
+  return !!(about && about.classList.contains("about-visible"));
+}
+
 function initReveals() {
-  const targets = Array.from(
-    document.querySelectorAll("#projects .reveal, #skills .reveal, #contact .reveal")
-  );
-  const decoders = Array.from(
-    document.querySelectorAll("#projects [data-decode], #skills [data-decode], #contact [data-decode]")
-  );
+  const targets = Array.from(document.querySelectorAll(REVEAL_SEL));
+  const decoders = Array.from(document.querySelectorAll(HEADING_DECODE_SEL));
 
   if (REDUCED) {
     targets.forEach((t) => t.classList.add("in"));
@@ -203,33 +219,32 @@ function initReveals() {
 
   function check() {
     const vh = window.innerHeight;
-    // reveal when element's top crosses 88% of viewport
     targets.forEach((t) => {
       if (t.classList.contains("in")) return;
+      if (!canRevealInAbout(t)) return;
       const r = t.getBoundingClientRect();
-      if (r.top < vh * 0.88 && r.bottom > 0) t.classList.add("in");
+      if (r.top < vh * 0.88 && r.bottom > 0) {
+        t.classList.add("in");
+      }
     });
-    // decode section titles when ~halfway up the viewport
     decoders.forEach((el) => {
       if (decoded.has(el)) return;
+      if (el.closest("#about")) return;
+      if (!canRevealInAbout(el)) return;
       const r = el.getBoundingClientRect();
-      if (r.top < vh * 0.78 && r.bottom > 0) {
-        decoded.add(el);
-        new Scrambler(el, { text: el.getAttribute("data-decode"), seq: true, speed: 26, settle: 2 }).run();
+      if (r.top < vh * 0.82 && r.bottom > 0) {
+        scrambleHeading(el, decoded);
       }
     });
   }
 
-  // drive via Lenis scroll if present, else native scroll, plus rAF safety
   if (window.portfolioLenis) window.portfolioLenis.on("scroll", check);
   window.addEventListener("scroll", check, { passive: true });
   window.addEventListener("resize", check);
-  // initial + a few settles for first paint
   check();
   requestAnimationFrame(check);
   setTimeout(check, 300);
 
-  // expose so Lenis (initialised after reveals) can attach if needed
   window.portfolioRevealCheck = check;
 }
 
@@ -238,8 +253,8 @@ function initReveals() {
 /* ================================================================= */
 function initCardHover() {
   if (REDUCED) return;
-  document.querySelectorAll(".proj-card").forEach((card) => {
-    const title = card.querySelector(".proj-title[data-decode]");
+  document.querySelectorAll(".proj-card, .featured-slide").forEach((card) => {
+    const title = card.querySelector(".proj-title[data-decode], .featured-title[data-decode]");
     if (!title) return;
     const final = title.getAttribute("data-decode");
     let busy = false;
@@ -336,6 +351,19 @@ function initAboutTimelineScroll() {
   let range = 0;
   let resizeTimer = 0;
 
+  function revealTimelineItems() {
+    const items = viewport.querySelectorAll(".about-timeline-item.reveal");
+    if (!items.length) return;
+    const vr = viewport.getBoundingClientRect();
+    items.forEach((item) => {
+      if (item.classList.contains("in")) return;
+      const ir = item.getBoundingClientRect();
+      if (ir.top < vr.bottom - 16 && ir.bottom > vr.top + 16) {
+        item.classList.add("in");
+      }
+    });
+  }
+
   function measure() {
     range = Math.max(0, track.offsetHeight - viewport.clientHeight);
     offset = Math.min(offset, range);
@@ -344,20 +372,27 @@ function initAboutTimelineScroll() {
 
   function apply() {
     track.style.transform = offset > 0 ? "translateY(" + (-offset) + "px)" : "";
+    revealTimelineItems();
   }
 
-  function inZone() {
-    if (!mq.matches || range <= 0) return false;
+  function atAboutStart() {
     const r = about.getBoundingClientRect();
-    return r.top <= NAV + 24 && r.bottom > window.innerHeight * 0.4;
+    return r.top <= NAV + 32 && r.top >= NAV - 12;
   }
 
   function onWheel(e) {
-    if (!mq.matches || range <= 0 || !inZone()) return;
+    if (!mq.matches || range <= 0) return;
 
     const dy = e.deltaY;
     const lenis = window.portfolioLenis;
-    const consume = (dy > 0 && offset < range - 1) || (dy < 0 && offset > 1);
+    let consume = false;
+
+    if (dy > 0 && atAboutStart() && offset < range - 1) {
+      consume = true;
+    } else if (dy < 0 && atAboutStart() && offset > 1) {
+      consume = true;
+    }
+
     if (!consume) return;
 
     e.preventDefault();
@@ -369,12 +404,14 @@ function initAboutTimelineScroll() {
 
   function onPageScroll() {
     const r = about.getBoundingClientRect();
-    if (r.top > window.innerHeight) {
-      offset = 0;
-      apply();
-    } else if (r.bottom < 0) {
+    if (r.bottom < 0) {
       offset = range;
       apply();
+    } else if (r.top > window.innerHeight) {
+      offset = 0;
+      apply();
+    } else {
+      revealTimelineItems();
     }
   }
 
@@ -392,6 +429,135 @@ function initAboutTimelineScroll() {
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(measure, 180);
+  });
+}
+
+/* ================================================================= */
+/*  PROJECTS — wheel scrolls featured carousel (desktop)               */
+/* ================================================================= */
+function initFeaturedProjectsScroll() {
+  if (REDUCED) return;
+
+  const mq = window.matchMedia("(min-width: 1001px)");
+  const block = document.getElementById("featuredBlock");
+  const track = document.querySelector(".featured-track");
+  const viewport = document.querySelector(".featured-viewport");
+  const fill = document.querySelector(".featured-meter-fill");
+  if (!block || !track || !viewport || !fill) return;
+
+  const NAV = 64;
+  let offset = 0;
+  let range = 0;
+  let resizeTimer = 0;
+
+  function measure() {
+    range = Math.max(0, track.scrollWidth - viewport.clientWidth);
+    offset = Math.min(offset, range);
+    apply();
+  }
+
+  function apply() {
+    track.style.transform = offset > 0 ? "translateX(" + (-offset) + "px)" : "";
+    const pct = range > 0 ? (offset / range) * 100 : 100;
+    fill.style.width = pct + "%";
+  }
+
+  function atFeaturedStart() {
+    const r = block.getBoundingClientRect();
+    return r.top <= NAV + 48 && r.top >= NAV - 16;
+  }
+
+  function onWheel(e) {
+    if (!mq.matches || range <= 0) return;
+
+    const dy = e.deltaY;
+    const lenis = window.portfolioLenis;
+    let consume = false;
+
+    if (dy > 0 && atFeaturedStart() && offset < range - 1) {
+      consume = true;
+    } else if (dy < 0 && atFeaturedStart() && offset > 1) {
+      consume = true;
+    }
+
+    if (!consume) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    if (lenis) lenis.scrollTo(lenis.scroll, { immediate: true });
+    offset = Math.max(0, Math.min(range, offset + dy));
+    apply();
+  }
+
+  function onPageScroll() {
+    const r = block.getBoundingClientRect();
+    if (r.bottom < 0) {
+      offset = range;
+      apply();
+    } else if (r.top > window.innerHeight) {
+      offset = 0;
+      apply();
+    }
+  }
+
+  window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+  if (window.portfolioLenis) {
+    window.portfolioLenis.on("scroll", onPageScroll);
+  } else {
+    window.addEventListener("scroll", onPageScroll, { passive: true });
+  }
+
+  measure();
+  window.portfolioFeaturedRefresh = measure;
+  mq.addEventListener("change", measure);
+  window.addEventListener("load", measure);
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(measure, 180);
+  });
+}
+
+/* ================================================================= */
+/*  IMPACT COUNTER                                                    */
+/* ================================================================= */
+function initImpactCounter() {
+  document.querySelectorAll(".about-impact").forEach((block) => {
+    const el = block.querySelector(".impact-num[data-count]");
+    if (!el) return;
+
+    const revealEl = block.closest(".reveal") || block;
+    let started = false;
+
+    function run() {
+      if (started) return;
+      started = true;
+      const target = parseInt(el.getAttribute("data-count"), 10);
+      if (!Number.isFinite(target)) return;
+
+      if (REDUCED) {
+        el.textContent = target.toLocaleString() + "+";
+        return;
+      }
+
+      const duration = target > 100 ? 1800 : 1200;
+      const t0 = performance.now();
+
+      function frame(now) {
+        const t = Math.min(1, (now - t0) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.floor(eased * target).toLocaleString() + "+";
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function tryRun() {
+      if (revealEl.classList.contains("in")) run();
+    }
+
+    tryRun();
+    const obs = new MutationObserver(tryRun);
+    obs.observe(revealEl, { attributes: true, attributeFilter: ["class"] });
   });
 }
 
@@ -458,27 +624,55 @@ window.portfolioScrollLock = (function () {
 window.portfolioAboutReveal = (function () {
   let decoded = false;
   let seeded = false;
-  const titleEl = () => document.querySelector("#about [data-decode]");
+  let headingTimers = [];
+  let revealTimers = [];
+
+  function decodeAboutHeadings() {
+    headingTimers.forEach(clearTimeout);
+    headingTimers = [];
+    const headings = document.querySelectorAll("#about .heading-decode[data-decode]");
+    headings.forEach((el, i) => {
+      if (REDUCED) {
+        el.textContent = el.getAttribute("data-decode");
+        return;
+      }
+      const id = setTimeout(() => {
+        new Scrambler(el, { text: el.getAttribute("data-decode"), seq: true, speed: 26, settle: 2 }).run();
+      }, i * 100);
+      headingTimers.push(id);
+    });
+  }
+
+  function revealAboutEls() {
+    const els = document.querySelectorAll("#about .reveal:not(.about-timeline-item)");
+    revealTimers.forEach(clearTimeout);
+    revealTimers = [];
+    if (REDUCED) {
+      els.forEach((r) => r.classList.add("in"));
+      document.querySelectorAll("#about .about-timeline-item.reveal").forEach((r) => r.classList.add("in"));
+      return;
+    }
+    els.forEach((r, i) => {
+      const id = setTimeout(() => r.classList.add("in"), 80 + i * 75);
+      revealTimers.push(id);
+    });
+  }
 
   return {
     seed() {
       if (seeded || REDUCED) return;
       seeded = true;
-      const el = titleEl();
-      if (el) el.textContent = "";
+      document.querySelectorAll("#about .heading-decode[data-decode]").forEach((el) => {
+        el.textContent = "";
+      });
     },
     decode() {
       if (decoded) return;
       decoded = true;
       const about = document.getElementById("about");
       if (about) about.classList.add("about-visible");
-      const el = titleEl();
-      if (el && !REDUCED) {
-        new Scrambler(el, { text: el.getAttribute("data-decode"), seq: true, speed: 26, settle: 2 }).run();
-      } else if (el) {
-        el.textContent = el.getAttribute("data-decode");
-      }
-      document.querySelectorAll("#about .reveal").forEach((r) => r.classList.add("in"));
+      decodeAboutHeadings();
+      revealAboutEls();
       if (window.portfolioAboutTimelineRefresh) {
         requestAnimationFrame(() => {
           window.portfolioAboutTimelineRefresh();
@@ -488,9 +682,16 @@ window.portfolioAboutReveal = (function () {
     reset() {
       decoded = false;
       seeded = false;
+      headingTimers.forEach(clearTimeout);
+      revealTimers.forEach(clearTimeout);
+      headingTimers = [];
+      revealTimers = [];
       const about = document.getElementById("about");
       if (about) about.classList.remove("about-visible");
       document.querySelectorAll("#about .reveal").forEach((r) => r.classList.remove("in"));
+      document.querySelectorAll("#about .heading-decode[data-decode]").forEach((el) => {
+        el.textContent = "";
+      });
     },
   };
 })();
@@ -544,7 +745,7 @@ function initCursor() {
   document.addEventListener("mouseleave", () => { cell.style.opacity = "0"; dot.style.opacity = "0"; });
   document.addEventListener("mouseenter", () => { cell.style.opacity = ""; dot.style.opacity = ""; });
 
-  const HOT = "a, button, [data-link], .proj-card, .social, input, textarea";
+  const HOT = "a, button, [data-link], .proj-card, .featured-slide, .featured-btn, .social, input, textarea";
   document.addEventListener("mouseover", (e) => {
     if (e.target.closest && e.target.closest(HOT)) root.classList.add("cursor-hot");
   });
@@ -568,6 +769,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initNav();
   initLenis();
   initAboutTimelineScroll();
+  initFeaturedProjectsScroll();
+  initImpactCounter();
   initTypewriter();
   initReveals();
   initCardHover();

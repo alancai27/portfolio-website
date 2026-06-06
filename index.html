@@ -24,7 +24,7 @@
       <nav class="nav-links" aria-label="Primary">
         <a href="#about" data-link><span class="nav-link-text">About</span></a>
         <a href="#projects" data-link><span class="nav-link-text">Projects</span></a>
-        <a href="#skills" data-link><span class="nav-link-text">Skills</span></a>
+        <a href="#skills" data-link><span class="nav-link-text">My Arsenal</span></a>
         <a href="#contact" data-link><span class="nav-link-text">Contact</span></a>
       </nav>
 
@@ -37,7 +37,7 @@
     <nav class="nav-mobile" id="navMobile" aria-label="Mobile">
       <a href="#about" data-link>About</a>
       <a href="#projects" data-link>Projects</a>
-      <a href="#skills" data-link>Skills</a>
+      <a href="#skills" data-link>My Arsenal</a>
       <a href="#contact" data-link>Contact</a>
     </nav>
   </header>
@@ -101,61 +101,61 @@
     <section class="section hero-about-target" id="about" data-screen-label="ABOUT">
       <div class="container">
         <div class="about-grid">
-          <!-- LEFT -->
+          <h2 class="about-heading reveal heading-decode" data-decode="About Me">About Me</h2>
+          <h3 class="about-side-title reveal heading-decode" data-decode="EXPERIENCE">EXPERIENCE</h3>
           <div class="about-main">
-            <p class="about-lead reveal">Alan Cai, NCSSM '27</p>
-            <div class="portrait-frame reveal" data-delay="1">
-              <image-slot id="aboutPortrait" class="about-portrait" shape="rounded" radius="16" src="assets/portrait.png" placeholder="DROP A PORTRAIT"></image-slot>
+            <p class="about-body reveal">Hi! I'm Alan, a 17-year-old full-stack developer at the North Carolina School of Science and Mathematics. I love building technology that creates real-world impact, especially in education and community-focused initiatives.</p>
+            <p class="about-body reveal">Some of my interests include machine learning, web development, cybersecurity but the common theme behind all of my projects is using technology to solve meaningful problems. I love turning code into something that helps others.</p>
+            <p class="about-body reveal">I'm always exploring new opportunities to learn, build, and collaborate on projects that can improve people's lives, even at the local-level!</p>
+            <div class="about-impact-row reveal">
+              <div class="about-impact">
+                <span class="impact-num" data-count="60000">0</span>
+                <span class="impact-label">PEOPLE IMPACTED THROUGH MY TOOLS</span>
+              </div>
+              <div class="about-impact">
+                <span class="impact-num" data-count="10">0</span>
+                <span class="impact-label">PROJECTS SHIPPED</span>
+              </div>
             </div>
-            <div class="about-divider reveal" data-delay="1" aria-hidden="true"></div>
-            <p class="about-body reveal" data-delay="1">Hi! I'm Alan, a 17-year-old full-stack developer at the North Carolina School of Science and Mathematics. I love building technology that creates real-world impact, especially in education and community-focused initiatives.</p>
-            <p class="about-body reveal" data-delay="1">Some of my interests include machine learning, web development, cybersecurity but the common theme behind all of my projects is using technology to solve meaningful problems. I love turning code into something that helps others.</p>
-            <p class="about-body reveal" data-delay="1">I'm always exploring new opportunities to learn, build, and collaborate on projects that can improve people's lives, even at the local-level!</p>
           </div>
 
           <!-- RIGHT -->
           <aside class="about-side">
             <div class="about-timeline-viewport">
               <div class="about-timeline-track">
-            <h3 class="about-side-title reveal" data-delay="2"><span class="side-title-text">EXPERIENCE</span></h3>
-            <ol class="about-timeline reveal" data-delay="2">
-              <li class="about-timeline-item">
+            <ol class="about-timeline">
+              <li class="about-timeline-item reveal">
                 <span class="tl-year">APR 2026 - PRESENT</span>
                 <span class="tl-role">Computer Science TA</span>
                 <span class="tl-org">NCSSM</span>
                 <span class="tl-desc">One of four CS TAs selected each year to help students with their classes, specifically CS4200 Cryptography and CS4230 Networks and the Web.</span>
               </li>
-              <li class="about-timeline-item">
+              <li class="about-timeline-item reveal">
                 <span class="tl-year">MAR 2026 - PRESENT</span>
                 <span class="tl-role">Student Researcher</span>
                 <span class="tl-org">NC State RTIS Lab</span>
                 <span class="tl-desc">Working under Dr. Zhishan Guo and alongside graduate students on autonomous driving research, with interests in real-time scheduling, ROS 2, and machine learning.</span>
               </li>
-              <li class="about-timeline-item">
+              <li class="about-timeline-item reveal">
                 <span class="tl-year">JAN 2026 - PRESENT</span>
                 <span class="tl-role">Co-Founder</span>
                 <span class="tl-org">Haku</span>
                 <span class="tl-desc">Co-founded Haku, a competitive Speech and Debate search engine that lets users access over 2 million evidence cards in seconds. Collaborating with international debate organizations and Kankee Briefs.</span>
               </li>
-              <li class="about-timeline-item">
+              <li class="about-timeline-item reveal">
                 <span class="tl-year">FEB 2025 - PRESENT</span>
                 <span class="tl-role">Developer</span>
                 <span class="tl-org">Scio.ly
 </span>
                 <span class="tl-desc">Helped create Scio.ly, a Science Olympiad platform providing resources, analytics, and other features to competitors. Partnered with Southern California SO and recognized by the vice president of the national board.</span>
               </li>
-              <li class="about-timeline-item">
+              <li class="about-timeline-item reveal">
                 <span class="tl-year">AUG 2025 - DEC 2025</span>
                 <span class="tl-role">Founder &amp; Project Lead</span>
                 <span class="tl-org">Carnegie Ventures</span>
                 <span class="tl-desc">Developed a smart buoy system using hydrophones and machine learning to identify fish species from underwater vocalizations, aimed at detecting overfishing and supporting endangered species protection. </span>
               </li>
             </ol>
-
-            <div class="about-impact reveal" data-delay="3">
-              <span class="impact-num" data-count="500">60,000+</span>
-              <span class="impact-label">PEOPLE IMPACTED THROUGH MY TOOLS</span>
-            </div>
               </div>
             </div>
           </aside>
@@ -166,51 +166,103 @@
     <!-- ===================================================== PROJECTS -->
     <section class="section" id="projects" data-screen-label="PROJECTS">
       <div class="container">
-        <header class="section-head reveal">
-          <span class="section-index">02</span>
-          <h2 class="section-title" data-decode="PROJECTS">PROJECTS</h2>
-        </header>
+        <h2 class="projects-heading reveal heading-decode" data-decode="Projects">Projects</h2>
+        <p class="projects-intro reveal">Here are all of the projects I've done throughout high-school, please don't hesitate to reach out if you have particular interest or questions related to any of them :)</p>
 
-        <div class="projects-group">
+        <div class="featured-block" id="featuredBlock">
           <header class="projects-subhead reveal">
-            <h3 class="projects-subtitle" data-decode="FEATURED WORK">FEATURED WORK</h3>
+            <h3 class="projects-subtitle heading-decode" data-decode="FEATURED WORK">FEATURED WORK</h3>
           </header>
-          <div class="projects">
-            <a class="proj-card reveal" data-delay="1" href="#" target="_blank" rel="noopener">
-              <div class="proj-cover">
-                <image-slot id="projFeatured01" class="proj-cover-slot" shape="rounded" radius="0" placeholder="COVER"></image-slot>
-              </div>
-              <div class="proj-body">
-                <h4 class="proj-title" data-decode="FEATURED PROJECT ONE">FEATURED PROJECT ONE</h4>
-                <p class="proj-desc">Short description of what this project does and why it matters. Replace with the real story.</p>
-              </div>
-            </a>
+          <div class="featured-viewport">
+            <div class="featured-track">
+              <article class="featured-slide reveal">
+                <h4 class="featured-title" data-decode="FEATURED PROJECT ONE">FEATURED PROJECT ONE</h4>
+                <div class="featured-body">
+                  <div class="featured-visual">
+                    <image-slot id="projFeatured01" class="featured-visual-slot" shape="rounded" radius="12" placeholder="MOCKUPS"></image-slot>
+                  </div>
+                  <div class="featured-card">
+                    <p class="featured-desc">Short description of what this project does and why it matters. Replace with the real story, features, and impact.</p>
+                    <div class="featured-stack">
+                      <span class="featured-tag">React</span>
+                      <span class="featured-tag">TypeScript</span>
+                      <span class="featured-tag">Node.js</span>
+                      <span class="featured-tag">PostgreSQL</span>
+                      <span class="featured-tag">Docker</span>
+                      <span class="featured-tag">Kubernetes</span>
+                    </div>
+                    <div class="featured-card-foot">
+                      <span class="featured-date">JAN 2026 - PRESENT</span>
+                      <div class="featured-actions">
+                        <a class="featured-btn" href="#" target="_blank" rel="noopener">VISIT</a>
+                        <a class="featured-btn" href="#" target="_blank" rel="noopener">SOURCE</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-            <a class="proj-card reveal" data-delay="2" href="#" target="_blank" rel="noopener">
-              <div class="proj-cover">
-                <image-slot id="projFeatured02" class="proj-cover-slot" shape="rounded" radius="0" placeholder="COVER"></image-slot>
-              </div>
-              <div class="proj-body">
-                <h4 class="proj-title" data-decode="FEATURED PROJECT TWO">FEATURED PROJECT TWO</h4>
-                <p class="proj-desc">Short description of what this project does and why it matters. Replace with the real story.</p>
-              </div>
-            </a>
+              <article class="featured-slide reveal">
+                <h4 class="featured-title" data-decode="FEATURED PROJECT TWO">FEATURED PROJECT TWO</h4>
+                <div class="featured-body">
+                  <div class="featured-visual">
+                    <image-slot id="projFeatured02" class="featured-visual-slot" shape="rounded" radius="12" placeholder="MOCKUPS"></image-slot>
+                  </div>
+                  <div class="featured-card">
+                    <p class="featured-desc">Short description of what this project does and why it matters. Replace with the real story, features, and impact.</p>
+                    <div class="featured-stack">
+                      <span class="featured-tag">Python</span>
+                      <span class="featured-tag">PyTorch</span>
+                      <span class="featured-tag">Flask</span>
+                      <span class="featured-tag">OpenCV</span>
+                      <span class="featured-tag">Redis</span>
+                    </div>
+                    <div class="featured-card-foot">
+                      <span class="featured-date">MAR 2025 - PRESENT</span>
+                      <div class="featured-actions">
+                        <a class="featured-btn" href="#" target="_blank" rel="noopener">VISIT</a>
+                        <a class="featured-btn" href="#" target="_blank" rel="noopener">SOURCE</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-            <a class="proj-card reveal" data-delay="3" href="#" target="_blank" rel="noopener">
-              <div class="proj-cover">
-                <image-slot id="projFeatured03" class="proj-cover-slot" shape="rounded" radius="0" placeholder="COVER"></image-slot>
-              </div>
-              <div class="proj-body">
-                <h4 class="proj-title" data-decode="FEATURED PROJECT THREE">FEATURED PROJECT THREE</h4>
-                <p class="proj-desc">Short description of what this project does and why it matters. Replace with the real story.</p>
-              </div>
-            </a>
+              <article class="featured-slide reveal">
+                <h4 class="featured-title" data-decode="FEATURED PROJECT THREE">FEATURED PROJECT THREE</h4>
+                <div class="featured-body">
+                  <div class="featured-visual">
+                    <image-slot id="projFeatured03" class="featured-visual-slot" shape="rounded" radius="12" placeholder="MOCKUPS"></image-slot>
+                  </div>
+                  <div class="featured-card">
+                    <p class="featured-desc">Short description of what this project does and why it matters. Replace with the real story, features, and impact.</p>
+                    <div class="featured-stack">
+                      <span class="featured-tag">Next.js</span>
+                      <span class="featured-tag">Tailwind</span>
+                      <span class="featured-tag">Supabase</span>
+                      <span class="featured-tag">Vercel</span>
+                    </div>
+                    <div class="featured-card-foot">
+                      <span class="featured-date">AUG 2025 - DEC 2025</span>
+                      <div class="featured-actions">
+                        <a class="featured-btn" href="#" target="_blank" rel="noopener">VISIT</a>
+                        <a class="featured-btn" href="#" target="_blank" rel="noopener">SOURCE</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="featured-meter reveal" aria-hidden="true">
+            <span class="featured-meter-fill"></span>
           </div>
         </div>
 
         <div class="projects-group">
           <header class="projects-subhead reveal">
-            <h3 class="projects-subtitle" data-decode="OTHER WORK">OTHER WORK</h3>
+            <h3 class="projects-subtitle heading-decode" data-decode="OTHER WORK">OTHER WORK</h3>
           </header>
           <div class="projects">
             <a class="proj-card reveal" data-delay="1" href="#" target="_blank" rel="noopener">
@@ -248,55 +300,57 @@
     </section>
 
     <!-- ===================================================== SKILLS -->
-    <section class="section" id="skills" data-screen-label="SKILLS">
+    <section class="section" id="skills" data-screen-label="MY ARSENAL">
       <div class="container">
-        <header class="section-head reveal">
-          <span class="section-index">03</span>
-          <h2 class="section-title" data-decode="SKILLS">SKILLS</h2>
-        </header>
+        <h2 class="skills-heading reveal heading-decode" data-decode="My Arsenal">My Arsenal</h2>
+        <p class="skills-intro reveal">Wondering what I use to build? This is my tech stack, everything I use to turn ideas into reality. I'm always picking up something new, so this list will continue to grow, but here's a (mostly) complete list of what I use to bring projects to life.</p>
 
-        <div class="skills-rows">
-          <div class="skill-row reveal" data-delay="1">
-            <span class="skill-row-label">LANGUAGES</span>
-            <div class="skill-tags">
-              <span class="role-tag">Python</span>
-              <span class="role-tag">C++</span>
-              <span class="role-tag">JavaScript</span>
-              <span class="role-tag">TypeScript</span>
-              <span class="role-tag">SQL</span>
+        <div class="skills-grid">
+          <div class="skill-col reveal">
+            <h3 class="skill-col-label heading-decode" data-decode="LANGUAGES">LANGUAGES</h3>
+            <div class="skill-cards">
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
             </div>
           </div>
 
-          <div class="skill-row reveal" data-delay="2">
-            <span class="skill-row-label">FRAMEWORKS</span>
-            <div class="skill-tags">
-              <span class="role-tag">React</span>
-              <span class="role-tag">Flask</span>
-              <span class="role-tag">PyTorch</span>
-              <span class="role-tag">Node.js</span>
-              <span class="role-tag">FastAPI</span>
+          <div class="skill-col reveal">
+            <h3 class="skill-col-label heading-decode" data-decode="FRAMEWORKS">FRAMEWORKS</h3>
+            <div class="skill-cards">
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
             </div>
           </div>
 
-          <div class="skill-row reveal" data-delay="3">
-            <span class="skill-row-label">INFRASTRUCTURE</span>
-            <div class="skill-tags">
-              <span class="role-tag">Docker</span>
-              <span class="role-tag">Linux</span>
-              <span class="role-tag">AWS</span>
-              <span class="role-tag">PostgreSQL</span>
-              <span class="role-tag">GitHub Actions</span>
+          <div class="skill-col reveal">
+            <h3 class="skill-col-label heading-decode" data-decode="INFRA">INFRA</h3>
+            <div class="skill-cards">
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
             </div>
           </div>
 
-          <div class="skill-row reveal" data-delay="3">
-            <span class="skill-row-label">TOOLS</span>
-            <div class="skill-tags">
-              <span class="role-tag">Git</span>
-              <span class="role-tag">VS Code</span>
-              <span class="role-tag">Jupyter</span>
-              <span class="role-tag">Postman</span>
-              <span class="role-tag">Figma</span>
+          <div class="skill-col reveal">
+            <h3 class="skill-col-label heading-decode" data-decode="TOOLS">TOOLS</h3>
+            <div class="skill-cards">
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
+              <div class="skill-card"><span class="skill-icon">ICON</span><span class="skill-name">—</span></div>
             </div>
           </div>
         </div>
@@ -306,19 +360,14 @@
     <!-- ===================================================== CONTACT -->
     <section class="section section-contact" id="contact" data-screen-label="CONTACT">
       <div class="container">
-        <header class="section-head reveal">
-          <span class="section-index">04</span>
-          <h2 class="section-title" data-decode="CONTACT">CONTACT</h2>
-        </header>
-
-        <div class="contact-block reveal" data-delay="1">
-          <div class="contact-left">
-            <h3 class="contact-lead">Let's <em>talk.</em></h3>
-            <span class="contact-rule" aria-hidden="true"></span>
+        <div class="contact-block">
+          <div class="contact-col contact-col-left reveal">
+            <div class="contact-label-spacer" aria-hidden="true">REACH OUT VIA</div>
+            <h3 class="contact-lead heading-decode" data-decode="Let's connect.">Let's connect.</h3>
+            <p class="contact-intro">Want to build something? I'm always down to chat. Whether it's about a project, an opportunity, or even just an idea you're excited about, feel free to reach out.</p>
           </div>
-
-          <div class="contact-right">
-            <span class="contact-reach-label">REACH OUT VIA</span>
+          <div class="contact-col contact-col-right reveal">
+            <span class="contact-reach-label heading-decode" data-decode="REACH OUT VIA">REACH OUT VIA</span>
             <div class="contact-links">
               <a class="contact-link" href="mailto:alan.cai2027@gmail.com">
                 <span class="cl-icon" aria-hidden="true">
@@ -360,15 +409,16 @@
             </div>
           </div>
         </div>
-
-        <footer class="site-footer">
-          <span>蔡卓成</span>
-          <span>© 2026 · AC</span>
-        </footer>
       </div>
     </section>
 
   </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>© 2026 Alan Cai</span>
+    </div>
+  </footer>
 
   <!-- Scripts: GSAP → ScrollTrigger → Lenis → hero-scroll → script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
