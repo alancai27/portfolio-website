@@ -226,7 +226,7 @@
 
   class ImageSlot extends HTMLElement {
     static get observedAttributes() {
-      return ['shape', 'radius', 'mask', 'fit', 'position', 'placeholder', 'src', 'id'];
+      return ['shape', 'radius', 'mask', 'fit', 'position', 'placeholder', 'src', 'id', 'frame-bg'];
     }
 
     constructor() {
@@ -591,6 +591,7 @@
       this._frame.style.clipPath = mask || '';
       this._ring.style.borderRadius = mask ? '' : radius;
       this._ring.style.display = mask ? 'none' : '';
+      this._frame.style.background = this.getAttribute('frame-bg') || 'rgba(0,0,0,.04)';
 
       // Controls and reframe entry gate on this so share links stay read-only.
       const editable = !!(window.omelette && window.omelette.writeFile);

@@ -230,6 +230,7 @@ function initReveals() {
     decoders.forEach((el) => {
       if (decoded.has(el)) return;
       if (el.closest("#about")) return;
+      if (el.closest("#projects")) return;
       if (!canRevealInAbout(el)) return;
       const r = el.getBoundingClientRect();
       if (r.top < vh * 0.82 && r.bottom > 0) {
@@ -246,24 +247,6 @@ function initReveals() {
   setTimeout(check, 300);
 
   window.portfolioRevealCheck = check;
-}
-
-/* ================================================================= */
-/*  PROJECT CARD HOVER — scramble title                              */
-/* ================================================================= */
-function initCardHover() {
-  if (REDUCED) return;
-  document.querySelectorAll(".proj-card, .featured-slide").forEach((card) => {
-    const title = card.querySelector(".proj-title[data-decode], .featured-title[data-decode]");
-    if (!title) return;
-    const final = title.getAttribute("data-decode");
-    let busy = false;
-    card.addEventListener("mouseenter", () => {
-      if (busy) return;
-      busy = true;
-      new Scrambler(title, { text: final, seq: true, speed: 20, settle: 1 }).run(() => { busy = false; });
-    });
-  });
 }
 
 /* ================================================================= */
@@ -424,91 +407,6 @@ function initAboutTimelineScroll() {
 
   measure();
   window.portfolioAboutTimelineRefresh = measure;
-  mq.addEventListener("change", measure);
-  window.addEventListener("load", measure);
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(measure, 180);
-  });
-}
-
-/* ================================================================= */
-/*  PROJECTS — wheel scrolls featured carousel (desktop)               */
-/* ================================================================= */
-function initFeaturedProjectsScroll() {
-  if (REDUCED) return;
-
-  const mq = window.matchMedia("(min-width: 1001px)");
-  const block = document.getElementById("featuredBlock");
-  const track = document.querySelector(".featured-track");
-  const viewport = document.querySelector(".featured-viewport");
-  const fill = document.querySelector(".featured-meter-fill");
-  if (!block || !track || !viewport || !fill) return;
-
-  const NAV = 64;
-  let offset = 0;
-  let range = 0;
-  let resizeTimer = 0;
-
-  function measure() {
-    range = Math.max(0, track.scrollWidth - viewport.clientWidth);
-    offset = Math.min(offset, range);
-    apply();
-  }
-
-  function apply() {
-    track.style.transform = offset > 0 ? "translateX(" + (-offset) + "px)" : "";
-    const pct = range > 0 ? (offset / range) * 100 : 100;
-    fill.style.width = pct + "%";
-  }
-
-  function atFeaturedStart() {
-    const r = block.getBoundingClientRect();
-    return r.top <= NAV + 48 && r.top >= NAV - 16;
-  }
-
-  function onWheel(e) {
-    if (!mq.matches || range <= 0) return;
-
-    const dy = e.deltaY;
-    const lenis = window.portfolioLenis;
-    let consume = false;
-
-    if (dy > 0 && atFeaturedStart() && offset < range - 1) {
-      consume = true;
-    } else if (dy < 0 && atFeaturedStart() && offset > 1) {
-      consume = true;
-    }
-
-    if (!consume) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-    if (lenis) lenis.scrollTo(lenis.scroll, { immediate: true });
-    offset = Math.max(0, Math.min(range, offset + dy));
-    apply();
-  }
-
-  function onPageScroll() {
-    const r = block.getBoundingClientRect();
-    if (r.bottom < 0) {
-      offset = range;
-      apply();
-    } else if (r.top > window.innerHeight) {
-      offset = 0;
-      apply();
-    }
-  }
-
-  window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-  if (window.portfolioLenis) {
-    window.portfolioLenis.on("scroll", onPageScroll);
-  } else {
-    window.addEventListener("scroll", onPageScroll, { passive: true });
-  }
-
-  measure();
-  window.portfolioFeaturedRefresh = measure;
   mq.addEventListener("change", measure);
   window.addEventListener("load", measure);
   window.addEventListener("resize", () => {
@@ -710,6 +608,23 @@ function initReducedFallback() {
 }
 
 /* ================================================================= */
+/*  PROJECT CARDS — expand / minimize descriptions                   */
+/* ================================================================= */
+function initProjectToggles() {
+  document.querySelectorAll(".proj-card").forEach((card) => {
+    const wrap = card.querySelector(".proj-desc-wrap");
+    const btn = card.querySelector(".proj-toggle");
+    if (!wrap || !btn) return;
+
+    btn.addEventListener("click", () => {
+      const isCollapsed = wrap.classList.toggle("is-collapsed");
+      btn.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
+      btn.setAttribute("aria-label", isCollapsed ? "Expand description" : "Minimize description");
+    });
+  });
+}
+
+/* ================================================================= */
 /*  BOOT                                                             */
 /* ================================================================= */
 /*  CUSTOM CURSOR — circle reticle                                   */
@@ -745,7 +660,7 @@ function initCursor() {
   document.addEventListener("mouseleave", () => { cell.style.opacity = "0"; dot.style.opacity = "0"; });
   document.addEventListener("mouseenter", () => { cell.style.opacity = ""; dot.style.opacity = ""; });
 
-  const HOT = "a, button, [data-link], .proj-card, .featured-slide, .featured-btn, .skill-card-link, .social, input, textarea";
+  const HOT = "a, button, [data-link], .proj-live, .proj-toggle, .skill-card-link, .social, input, textarea";
   document.addEventListener("mouseover", (e) => {
     if (e.target.closest && e.target.closest(HOT)) root.classList.add("cursor-hot");
   });
@@ -769,11 +684,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initNav();
   initLenis();
   initAboutTimelineScroll();
-  initFeaturedProjectsScroll();
   initImpactCounter();
   initTypewriter();
   initReveals();
-  initCardHover();
+  initProjectToggles();
   initReducedFallback();
   initCursor();
   initHeroTitle();   // last — triggers scroll lock + hero-scroll wiring
