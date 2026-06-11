@@ -256,15 +256,19 @@ function initNav() {
   const toggle = document.getElementById("navToggle");
   const menu = document.getElementById("navMobile");
   if (toggle && menu) {
-    toggle.addEventListener("click", () => {
-      const open = menu.classList.toggle("open");
+    const setMenuOpen = (open) => {
+      menu.classList.toggle("open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+
+    toggle.addEventListener("click", () => {
+      setMenuOpen(!menu.classList.contains("open"));
     });
     menu.querySelectorAll("a").forEach((a) => {
       a.addEventListener("click", () => {
-        menu.classList.remove("open");
-        toggle.setAttribute("aria-expanded", "false");
+        setMenuOpen(false);
       });
     });
   }
@@ -273,9 +277,12 @@ function initNav() {
 /* ================================================================= */
 /*  LENIS + GSAP smooth scroll                                       */
 /* ================================================================= */
+const COARSE_POINTER = window.matchMedia("(pointer: coarse)").matches;
+const TOUCH_DEVICE = COARSE_POINTER || window.matchMedia("(hover: none)").matches;
+
 function initLenis() {
-  if (REDUCED || typeof Lenis === "undefined") {
-    // plain anchor scrolling fallback
+  if (REDUCED || typeof Lenis === "undefined" || TOUCH_DEVICE) {
+    // native scroll on touch — smoother pin/zoom with ScrollTrigger
     initAnchors(null);
     return;
   }
@@ -329,7 +336,7 @@ function initAboutTimelineScroll() {
   const viewport = document.querySelector(".about-timeline-viewport");
   if (!about || !track || !viewport) return;
 
-  const NAV = 64;
+  const NAV = () => (document.getElementById("nav") || { offsetHeight: 64 }).offsetHeight;
   let offset = 0;
   let range = 0;
   let resizeTimer = 0;
@@ -360,7 +367,7 @@ function initAboutTimelineScroll() {
 
   function atAboutStart() {
     const r = about.getBoundingClientRect();
-    return r.top <= NAV + 32 && r.top >= NAV - 12;
+    return r.top <= NAV() + 32 && r.top >= NAV() - 12;
   }
 
   function onWheel(e) {
@@ -460,7 +467,8 @@ function initImpactCounter() {
 }
 
 function initAnchors(lenis) {
-  const navH = 64;
+  const navEl = document.getElementById("nav");
+  const navOffset = () => (navEl ? navEl.offsetHeight : 64) + 8;
   document.querySelectorAll("[data-link]").forEach((a) => {
     a.addEventListener("click", (e) => {
       const href = a.getAttribute("href");
@@ -474,10 +482,21 @@ function initAnchors(lenis) {
 
       if (lenis) {
         if (top === 0) lenis.scrollTo(0, { offset: 0 });
-        else lenis.scrollTo(target, { offset: -navH - 8 });
+        else lenis.scrollTo(target, { offset: -navOffset() });
       } else {
-        const y = top === 0 ? 0 : target.getBoundingClientRect().top + window.scrollY - navH - 8;
+        const y = top === 0 ? 0 : target.getBoundingClientRect().top + window.scrollY - navOffset();
         window.scrollTo({ top: y, behavior: "smooth" });
+      }
+
+      const menu = document.getElementById("navMobile");
+      const toggle = document.getElementById("navToggle");
+      if (menu && menu.classList.contains("open")) {
+        menu.classList.remove("open");
+        document.body.style.overflow = "";
+        if (toggle) {
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Open menu");
+        }
       }
     });
   });

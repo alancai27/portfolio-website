@@ -12,11 +12,13 @@
   const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* tuning ------------------------------------------------------- */
-  const SCROLL_VH = 68;            // length of pinned runway (vh)
-  const SCRUB = 0.5;               // scrub smoothing
+  const MOBILE = window.matchMedia("(max-width: 720px)").matches;
+  const TOUCH = window.matchMedia("(pointer: coarse)").matches;
+  const SCROLL_VH = MOBILE ? 52 : 68;   // shorter runway on phones
+  const SCRUB = TOUCH ? 0.35 : 0.5;     // snappier follow on touch scroll
   const FADE_OUT_END = 0.30;       // tagline/actions gone by 30%
   const FADE_IN_START = 0.80;      // About begins fading in (over black)
-  const MAX_PROGRESS_STEP = 0.05;  // cap per-frame jump (anti-flick)
+  const MAX_PROGRESS_STEP = TOUCH ? 0.09 : 0.05;  // cap per-frame jump (anti-flick)
   const MAX_SCALE_CAP = 90;        // base reference cap
 
   /* where on the N we dive — fraction across / down its bounding box.
@@ -231,6 +233,10 @@
     apply(0);
 
     window.addEventListener("resize", debounce(recompute, 160));
+    window.addEventListener("orientationchange", debounce(() => {
+      recompute();
+      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+    }, 280));
 
     window.portfolioHeroReset = function () {
       lastProgress = 0;
