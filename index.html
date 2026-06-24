@@ -223,28 +223,6 @@
           </div>
 
           <div class="projects-col">
-          <article class="proj-card reveal" data-delay="3">
-            <div class="proj-body">
-              <div class="proj-header">
-                <h4 class="proj-title">Real-Time Wildfire Detection</h4>
-                <p class="proj-subtitle">Integrating YOLOv8 and Simulated Telemetry into Autonomous UAVs</p>
-              </div>
-              <div class="proj-cover proj-cover--photo">
-                <image-slot id="projWildfire" class="proj-cover-slot" shape="rect" src="assets/projects/wildfire-uav.png" fit="contain" frame-bg="#ffffff" placeholder="Wildfire UAV"></image-slot>
-              </div>
-              <div class="proj-desc-wrap is-collapsed">
-                <p class="proj-desc">NCSEF project that uses an AI vision model to spot wildfires in live aerial drone footage, replacing an earlier offline color-thresholding detector with a YOLOv8 Nano model running on edge devices. A telemetry logic gate only triggers an alert when detection confidence exceeds 75% across three consecutive frames, suppressing false positives from glare and foliage. The YOLOv8 approach cut false positives 40% versus the prior method and ran at a stable 28 FPS, showing real-time onboard inference is feasible. Built with Python, YOLOv8, and OpenCV.</p>
-              </div>
-              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
-              <div class="proj-stack" aria-label="Tech stack">
-                <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" title="Python — the language the detection and image-processing code is written in" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/ultralytics/111F68" alt="YOLOv8 (Ultralytics)" title="YOLOv8 (Ultralytics) — the neural network doing the live wildfire detection (Phase 2)" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/opencv/5C3EE8" alt="OpenCV" title="OpenCV — image/video processing and the Phase 1 color-thresholding baseline" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/tensorflow/FF6F00" alt="TensorFlow / TensorFlow Lite" title="TensorFlow / TensorFlow Lite — AI model training and lightweight on-device inference" width="22" height="22" loading="lazy">
-              </div>
-            </div>
-          </article>
-
           <article class="proj-card reveal" data-delay="1">
             <div class="proj-body">
               <div class="proj-header">
