@@ -700,6 +700,7 @@ function initCursor() {
 
 /* ================================================================= */
 document.addEventListener("DOMContentLoaded", () => {
+  document.title = "Alan Cai";
   initNav();
   initLenis();
   initAboutTimelineScroll();

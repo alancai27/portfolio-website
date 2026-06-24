@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Alan Cai · Portfolio</title>
+  <title>Alan Cai</title>
   <meta name="description" content="Alan Cai · CS student at NCSSM Durham. Computer vision, ML, cybersecurity, web." />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
 
@@ -169,7 +169,6 @@
         <h2 class="projects-heading reveal heading-decode" data-decode="Projects">Projects</h2>
 
         <div class="projects-catalog">
-          <div class="projects-col">
           <article class="proj-card reveal" data-delay="1">
             <div class="proj-body">
               <div class="proj-header">
@@ -220,9 +219,7 @@
               <a class="proj-live" href="https://scio.ly" target="_blank" rel="noopener">VISIT SITE</a>
             </div>
           </article>
-          </div>
 
-          <div class="projects-col">
           <article class="proj-card reveal" data-delay="1">
             <div class="proj-body">
               <div class="proj-header">
@@ -246,10 +243,31 @@
               <a class="proj-live" href="https://tremora.health" target="_blank" rel="noopener">VISIT SITE</a>
             </div>
           </article>
-          </div>
 
-          <div class="projects-col">
           <article class="proj-card reveal" data-delay="2">
+            <div class="proj-body">
+              <div class="proj-header">
+                <h4 class="proj-title">Provide</h4>
+                <p class="proj-subtitle">NC Food-Access Map</p>
+              </div>
+              <div class="proj-cover proj-cover--logo proj-cover--static">
+                <img class="proj-cover-img" src="assets/projects/provide.png" alt="Provide" loading="lazy">
+              </div>
+              <div class="proj-desc-wrap is-collapsed">
+                <p class="proj-desc">Provide is a free, public web map that helps North Carolina residents find SNAP retailers, food pantries, free meal sites, and WIC clinics near any address or ZIP code, overlaying USDA food-access data and NC transit routes to show both resources and structural barriers at once. Built as a no-backend static site, it queries live public APIs (USDA FNS, NC 211, Feeding America) at search time with bundled JSON caches as CORS fallbacks and Nominatim geocoding. Node maintenance scripts refresh each dataset, parsing the NC DHHS WIC directory straight from PDF, deriving statewide GTFS transit, and shading 2,195 census tracts to flag 353 food deserts. Built with vanilla JS, Leaflet, D3/TopoJSON, public civic APIs, and Node data-pipeline scripts.</p>
+              </div>
+              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
+              <div class="proj-stack" aria-label="Tech stack">
+                <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla front-end map and search UI" width="22" height="22" loading="lazy">
+                <img src="https://cdn.simpleicons.org/leaflet/199900" alt="Leaflet" title="Leaflet — interactive web map" width="22" height="22" loading="lazy">
+                <img src="https://cdn.simpleicons.org/d3/FF7F0E" alt="D3.js" title="D3.js / TopoJSON — census tract shading and geospatial layers" width="22" height="22" loading="lazy">
+                <img src="https://cdn.simpleicons.org/nodedotjs/339933" alt="Node.js" title="Node.js — dataset refresh and maintenance scripts" width="22" height="22" loading="lazy">
+              </div>
+              <a class="proj-live" href="https://provide-nc.org" target="_blank" rel="noopener">VISIT SITE</a>
+            </div>
+          </article>
+
+          <article class="proj-card reveal" data-delay="3">
             <div class="proj-body">
               <div class="proj-header">
                 <h4 class="proj-title">Haku</h4>
@@ -274,30 +292,6 @@
               <a class="proj-live" href="https://haku.cards" target="_blank" rel="noopener">VISIT SITE</a>
             </div>
           </article>
-
-          <article class="proj-card reveal" data-delay="3">
-            <div class="proj-body">
-              <div class="proj-header">
-                <h4 class="proj-title">Provide</h4>
-                <p class="proj-subtitle">NC Food-Access Map</p>
-              </div>
-              <div class="proj-cover proj-cover--logo proj-cover--static">
-                <img class="proj-cover-img" src="assets/projects/provide.png" alt="Provide" loading="lazy">
-              </div>
-              <div class="proj-desc-wrap is-collapsed">
-                <p class="proj-desc">Provide is a free, public web map that helps North Carolina residents find SNAP retailers, food pantries, free meal sites, and WIC clinics near any address or ZIP code, overlaying USDA food-access data and NC transit routes to show both resources and structural barriers at once. Built as a no-backend static site, it queries live public APIs (USDA FNS, NC 211, Feeding America) at search time with bundled JSON caches as CORS fallbacks and Nominatim geocoding. Node maintenance scripts refresh each dataset, parsing the NC DHHS WIC directory straight from PDF, deriving statewide GTFS transit, and shading 2,195 census tracts to flag 353 food deserts. Built with vanilla JS, Leaflet, D3/TopoJSON, public civic APIs, and Node data-pipeline scripts.</p>
-              </div>
-              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
-              <div class="proj-stack" aria-label="Tech stack">
-                <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla front-end map and search UI" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/leaflet/199900" alt="Leaflet" title="Leaflet — interactive web map" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/d3/FF7F0E" alt="D3.js" title="D3.js / TopoJSON — census tract shading and geospatial layers" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/nodedotjs/339933" alt="Node.js" title="Node.js — dataset refresh and maintenance scripts" width="22" height="22" loading="lazy">
-              </div>
-              <a class="proj-live" href="https://provide-nc.org" target="_blank" rel="noopener">VISIT SITE</a>
-            </div>
-          </article>
-          </div>
         </div>
       </div>
     </section>
