@@ -1,3 +1,4 @@
 .DS_Store
 .image-slots.state.json
 uploads/
+node_modules/

@@ -2,7 +2,8 @@
    ALAN CAI — PORTFOLIO · hero-scroll.js
    GSAP ScrollTrigger pinned hero zoom INTO the bottom of the N.
    The portal target is a near-black anchor sitting on the N's stroke,
-   so at full zoom the viewport fills with black, then About emerges.
+   so at full zoom the viewport fills with black, then the dragon
+   black-phase flies across, then About emerges.
    Text is scaled with a NON-promoted 2D transform so the browser
    re-rasterises the vector glyphs every frame — the letters stay sharp.
    ================================================================= */
@@ -14,11 +15,19 @@
   const TOUCH = window.matchMedia("(pointer: coarse)").matches;
   const IS_TOUCH = TOUCH || MOBILE;
 
-  const SCROLL_VH = IS_TOUCH ? 56 : 68;
+  const SCROLL_VH = IS_TOUCH ? 250 : 340;
   const SCRUB = IS_TOUCH ? 0.22 : 0.5;
-  const FADE_IN_START = 0.80;
   const MAX_PROGRESS_STEP = IS_TOUCH ? 0 : 0.05;
   const MAX_SCALE_CAP = 90;
+
+  /* Dragon flight speed is governed by its scroll runway:
+     (DRAGON_OUT − DRAGON_IN) × SCROLL_VH. Design target ≈ 230vh desktop.
+     Tune speed here, never inside dragon-interstitial.js. */
+  /* Phase map — all animated values are pure functions of scrub progress p */
+  const ZOOM_END = 0.26;
+  const DRAGON_IN = 0.24;
+  const DRAGON_OUT = 0.92;
+  const FADE_IN_START = 0.90;
 
   const N_X = 0.77;
   const N_Y = 0.76;
@@ -26,6 +35,16 @@
 
   let trigger = null;
   let lastProgress = 0;
+  let dragonStage = null;
+  let dragonAttached = false;
+
+  function clamp01(v) {
+    return v < 0 ? 0 : v > 1 ? 1 : v;
+  }
+
+  function ramp(p, a, b) {
+    return clamp01((p - a) / (b - a));
+  }
 
   function viewportHeight() {
     return window.visualViewport ? window.visualViewport.height : window.innerHeight;
@@ -35,6 +54,7 @@
     const about = document.getElementById("about");
     if (about) {
       about.classList.add("about-visible");
+      about.style.opacity = "";
       about.style.marginTop = "0px";
     }
     window.portfolioAboutReveal && window.portfolioAboutReveal.decode();
@@ -66,6 +86,25 @@
       container.appendChild(a);
     }
     return a;
+  }
+
+  /* Black stage for the dragon flight — never in index.html, never under reduced motion. */
+  function ensureDragonStage(pin) {
+    let stage = pin.querySelector(".dragon-stage");
+    if (!stage) {
+      stage = document.createElement("div");
+      stage.className = "dragon-stage";
+      stage.setAttribute("aria-hidden", "true");
+      pin.appendChild(stage);
+    }
+    return stage;
+  }
+
+  function tryAttachDragon() {
+    const d = window.portfolioDragon;
+    if (!d || dragonAttached || !dragonStage || !d.ready()) return;
+    d.attach(dragonStage);
+    dragonAttached = true;
   }
 
   function positionAnchor(anchor, nEl, container) {
@@ -112,6 +151,7 @@
 
     const nEl = ensureNTarget(heroSection);
     const anchor = ensureAnchor(content);
+    dragonStage = ensureDragonStage(pin);
     if (!nEl) {
       reducedSetup();
       return;
@@ -156,10 +196,31 @@
       }
     }
 
+    function dragonAtProgress(p) {
+      if (!dragonStage) return;
+
+      /* Black stage fade — scene transition only; dragon exit is physical */
+      const backdrop =
+        ramp(p, 0.24, 0.27) * (1 - ramp(p, 0.92, 0.95));
+      dragonStage.style.opacity = String(backdrop);
+
+      const d = window.portfolioDragon;
+      const inWindow = p >= 0.22 && p <= 0.96;
+      const q = ramp(p, DRAGON_IN, DRAGON_OUT);
+
+      if (d && d.ready() && inWindow) {
+        tryAttachDragon();
+        d.setActive(true);
+        d.render(q);
+      } else if (d) {
+        d.setActive(false);
+      }
+    }
+
     function apply(p) {
       lastProgress = p;
 
-      const zp = Math.pow(p, IS_TOUCH ? 1.55 : 1.7);
+      const zp = Math.pow(clamp01(p / ZOOM_END), IS_TOUCH ? 1.55 : 1.7);
       const scale = 1 + zp * (maxScale - 1);
 
       gsap.set(content, {
@@ -170,8 +231,9 @@
         force3D: false,
       });
 
-      if (actions) actions.style.pointerEvents = p > 0.04 ? "none" : "";
+      if (actions) actions.style.pointerEvents = p > 0.02 ? "none" : "";
 
+      dragonAtProgress(p);
       aboutAtProgress(p);
     }
 
@@ -202,6 +264,11 @@
 
     apply(0);
 
+    window.portfolioDragonOnReady = function () {
+      tryAttachDragon();
+      if (lastProgress >= 0.22 && lastProgress <= 0.96) apply(lastProgress);
+    };
+
     window.addEventListener("resize", debounce(recompute, 160));
     window.addEventListener("orientationchange", debounce(() => {
       recompute();
@@ -216,6 +283,8 @@
       lastProgress = 0;
       window.portfolioScrollLock && window.portfolioScrollLock.unlock();
       gsap.set(content, { clearProps: "transform" });
+      if (dragonStage) dragonStage.style.opacity = "0";
+      if (window.portfolioDragon) window.portfolioDragon.setActive(false);
       apply(0);
       window.portfolioAboutReveal && window.portfolioAboutReveal.reset();
     };

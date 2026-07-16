@@ -128,10 +128,16 @@ function initHeroTitle() {
   setTimeout(() => { sL.run(after); sR.run(after); }, 380);
 }
 
-/* boot() hook called once title decoded — wire hero scroll */
+/* boot() hook called once title decoded — wire hero scroll + dragon preload */
 function boot(titleEl) {
   if (typeof window.initHeroScroll === "function") {
     window.initHeroScroll(titleEl);
+  }
+  /* ~2MB glb downloads while the user reads the hero; never blocks scroll */
+  if (!REDUCED && window.portfolioDragon && typeof window.portfolioDragon.preload === "function") {
+    window.portfolioDragon.preload().then(function () {
+      if (window.portfolioDragonOnReady) window.portfolioDragonOnReady();
+    });
   }
   if (window.portfolioAboutTimelineRefresh) {
     requestAnimationFrame(() => window.portfolioAboutTimelineRefresh());
@@ -322,6 +328,48 @@ function initLenis() {
   }
 
   initAnchors(lenis);
+}
+
+/* ================================================================= */
+/*  SCROLL PROGRESS — hairline driven by Lenis / ScrollTrigger      */
+/* ================================================================= */
+function initScrollProgress() {
+  let bar = document.querySelector(".scroll-progress");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "scroll-progress";
+    bar.setAttribute("aria-hidden", "true");
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+
+  if (REDUCED) {
+    bar.style.transform = "scaleX(1)";
+    return;
+  }
+
+  function update() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const y = (window.portfolioLenis && typeof window.portfolioLenis.scroll === "number")
+      ? window.portfolioLenis.scroll
+      : (window.scrollY || document.documentElement.scrollTop || 0);
+    const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    bar.style.transform = "scaleX(" + p + ")";
+  }
+
+  /* Hook the existing ST update path (Lenis → ScrollTrigger.update on scroll;
+     native scroll also trips ST) — no new window scroll listener. */
+  if (typeof ScrollTrigger !== "undefined") {
+    const prevUpdate = ScrollTrigger.update;
+    ScrollTrigger.update = function () {
+      prevUpdate.apply(ScrollTrigger, arguments);
+      update();
+    };
+    ScrollTrigger.addEventListener("refresh", update);
+  } else if (window.portfolioLenis) {
+    window.portfolioLenis.on("scroll", update);
+  }
+
+  update();
 }
 
 /* ================================================================= */
@@ -703,6 +751,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.title = "Alan Cai";
   initNav();
   initLenis();
+  initScrollProgress();
   initAboutTimelineScroll();
   initImpactCounter();
   initTypewriter();
