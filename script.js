@@ -36,51 +36,8 @@ class Scrambler {
   }
 
   run(done) {
-    if (REDUCED) { this.el.textContent = this.final; if (done) done(); return; }
-    const chars = this.final.split("");
-    const total = chars.length;
-    this._frame = 0;
-    let last = 0;
-
-    const tick = (now) => {
-      if (now - last < this.speed) { this._raf = requestAnimationFrame(tick); return; }
-      last = now;
-      this._frame++;
-
-      // how many characters are "revealed" so far
-      const revealed = this.seq
-        ? Math.floor(this._frame / this.settle)
-        : total;
-
-      let out = "";
-      let plain = "";
-      for (let i = 0; i < total; i++) {
-        const c = chars[i];
-        if (c === " ") { out += " "; plain += " "; continue; }
-        if (i < revealed) {
-          out += this.esc(c); plain += c;          // locked (final colour)
-        } else if (i < revealed + 5 || !this.seq) {
-          const g = this.rand();                    // active scramble
-          out += this.dim
-            ? '<span class="scramble-dim">' + this.esc(g) + "</span>"
-            : this.esc(g);
-          plain += g;
-        } else {
-          out += " "; plain += " ";                 // not yet reached
-        }
-      }
-      if (this.dim) this.el.innerHTML = out;
-      else this.el.textContent = plain;
-
-      if (revealed >= total) {
-        this.el.textContent = this.final;
-        cancelAnimationFrame(this._raf);
-        if (done) done();
-        return;
-      }
-      this._raf = requestAnimationFrame(tick);
-    };
-    this._raf = requestAnimationFrame(tick);
+    this.el.textContent = this.final;
+    if (done) done();
   }
 
   set(text) { this.el.textContent = text; }
@@ -93,39 +50,14 @@ function initHeroTitle() {
   const title = document.getElementById("heroTitle");
   if (!title) return;
 
-  // markup already contains the split words; scramble each word L->R together
   const left = title.querySelector(".title-word-left");
   const right = title.querySelector(".title-word-right");
   if (!left || !right) { window.portfolioHeroTitleDecoded = true; boot(title); return; }
 
-  const leftFinal = left.textContent;
-  const rightFinal = right.textContent;
-
-  if (REDUCED) {
-    left.textContent = leftFinal;
-    right.textContent = rightFinal;
-    window.portfolioHeroTitleDecoded = true;
-    boot(title);
-    return;
-  }
-
-  const sL = new Scrambler(left, { text: leftFinal, seq: true, speed: 34, settle: 6, dim: true });
-  const sR = new Scrambler(right, { text: rightFinal, seq: true, speed: 34, settle: 6, dim: true });
-
-  // lock scroll until decode finishes
-  window.portfolioScrollLock && window.portfolioScrollLock.lock();
-
-  let doneCount = 0;
-  const after = () => {
-    doneCount++;
-    if (doneCount < 2) return;
-    window.portfolioHeroTitleDecoded = true;
-    window.portfolioScrollLock && window.portfolioScrollLock.unlock();
-    boot(title);
-  };
-
-  // small delay so the page settles before decode
-  setTimeout(() => { sL.run(after); sR.run(after); }, 380);
+  left.textContent = "ALAN";
+  right.textContent = "CAI";
+  window.portfolioHeroTitleDecoded = true;
+  boot(title);
 }
 
 /* boot() hook called once title decoded — wire hero scroll + dragon preload */
@@ -190,7 +122,7 @@ function initTypewriter() {
 /* ================================================================= */
 /*  REVEALS + HEADING SCRAMBLE — scroll-position driven               */
 /* ================================================================= */
-const REVEAL_SEL = "#about .reveal:not(.about-timeline-item), #projects .reveal, #skills .reveal, #contact .reveal";
+const REVEAL_SEL = "#about .reveal, #projects .reveal, #skills .reveal, #contact .reveal";
 const HEADING_DECODE_SEL = ".heading-decode[data-decode]";
 
 function scrambleHeading(el, decoded) {
@@ -198,11 +130,7 @@ function scrambleHeading(el, decoded) {
   decoded.add(el);
   const text = el.getAttribute("data-decode");
   if (!text) return;
-  if (REDUCED) {
-    el.textContent = text;
-    return;
-  }
-  new Scrambler(el, { text, seq: true, speed: 26, settle: 2 }).run();
+  el.textContent = text;
 }
 
 function canRevealInAbout(el) {
@@ -328,6 +256,11 @@ function initLenis() {
   }
 
   initAnchors(lenis);
+
+  window.addEventListener("load", () => {
+    lenis.resize();
+    if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+  });
 }
 
 /* ================================================================= */
@@ -373,101 +306,73 @@ function initScrollProgress() {
 }
 
 /* ================================================================= */
-/*  ABOUT — wheel scrolls timeline while in section (desktop)        */
+/*  EXPERIENCE — scroll-driven rail meter + active card              */
 /* ================================================================= */
-function initAboutTimelineScroll() {
-  if (REDUCED) return;
+window.portfolioAboutTimelineRefresh = function () {};
 
-  const mq = window.matchMedia("(min-width: 1001px)");
+function initExpMeter() {
   const about = document.getElementById("about");
-  const track = document.querySelector(".about-timeline-track");
-  const viewport = document.querySelector(".about-timeline-viewport");
-  if (!about || !track || !viewport) return;
+  const fill = document.querySelector(".exp-rail-fill");
+  const list = document.querySelector(".exp-list");
+  const cards = Array.from(document.querySelectorAll(".exp-card"));
+  if (!about || !fill || !list || !cards.length) return;
 
-  const NAV = () => (document.getElementById("nav") || { offsetHeight: 64 }).offsetHeight;
-  let offset = 0;
-  let range = 0;
-  let resizeTimer = 0;
+  const REF = 0.42;
+  const n = cards.length;
+  let lastActive = cards[0] || null;
+  let lastIndex = 0;
 
-  function revealTimelineItems() {
-    const items = viewport.querySelectorAll(".about-timeline-item.reveal");
-    if (!items.length) return;
-    const vr = viewport.getBoundingClientRect();
-    items.forEach((item) => {
-      if (item.classList.contains("in")) return;
-      const ir = item.getBoundingClientRect();
-      if (ir.top < vr.bottom - 16 && ir.bottom > vr.top + 16) {
-        item.classList.add("in");
+  function update() {
+    const vh = window.innerHeight || 1;
+    const refY = vh * REF;
+
+    let active = null;
+    let activeIndex = lastIndex;
+    for (let i = 0; i < n; i++) {
+      const r = cards[i].getBoundingClientRect();
+      if (r.top <= refY && r.bottom >= refY) {
+        active = cards[i];
+        activeIndex = i;
+        break;
       }
-    });
-  }
-
-  function measure() {
-    range = Math.max(0, track.offsetHeight - viewport.clientHeight);
-    offset = Math.min(offset, range);
-    apply();
-  }
-
-  function apply() {
-    track.style.transform = offset > 0 ? "translateY(" + (-offset) + "px)" : "";
-    revealTimelineItems();
-  }
-
-  function atAboutStart() {
-    const r = about.getBoundingClientRect();
-    return r.top <= NAV() + 32 && r.top >= NAV() - 12;
-  }
-
-  function onWheel(e) {
-    if (!mq.matches || range <= 0) return;
-
-    const dy = e.deltaY;
-    const lenis = window.portfolioLenis;
-    let consume = false;
-
-    if (dy > 0 && atAboutStart() && offset < range - 1) {
-      consume = true;
-    } else if (dy < 0 && atAboutStart() && offset > 1) {
-      consume = true;
+    }
+    if (!active) {
+      let best = lastActive;
+      let bestDist = Infinity;
+      let bestI = lastIndex;
+      cards.forEach((card, i) => {
+        const r = card.getBoundingClientRect();
+        const mid = (r.top + r.bottom) / 2;
+        const dist = Math.abs(mid - refY);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = card;
+          bestI = i;
+        }
+      });
+      active = best;
+      activeIndex = bestI;
     }
 
-    if (!consume) return;
+    /* Chunked fill: one equal step per card (1/n, 2/n, … 1) */
+    const p = about.classList.contains("about-visible")
+      ? (activeIndex + 1) / n
+      : 0;
+    fill.style.height = (p * 100) + "%";
 
-    e.preventDefault();
-    e.stopPropagation();
-    if (lenis) lenis.scrollTo(lenis.scroll, { immediate: true });
-    offset = Math.max(0, Math.min(range, offset + dy));
-    apply();
-  }
-
-  function onPageScroll() {
-    const r = about.getBoundingClientRect();
-    if (r.bottom < 0) {
-      offset = range;
-      apply();
-    } else if (r.top > window.innerHeight) {
-      offset = 0;
-      apply();
-    } else {
-      revealTimelineItems();
+    if (active && (active !== lastActive || !active.classList.contains("is-active"))) {
+      cards.forEach((c) => c.classList.toggle("is-active", c === active));
+      lastActive = active;
+      lastIndex = activeIndex;
     }
   }
 
-  window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-  if (window.portfolioLenis) {
-    window.portfolioLenis.on("scroll", onPageScroll);
-  } else {
-    window.addEventListener("scroll", onPageScroll, { passive: true });
-  }
-
-  measure();
-  window.portfolioAboutTimelineRefresh = measure;
-  mq.addEventListener("change", measure);
-  window.addEventListener("load", measure);
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(measure, 180);
-  });
+  if (window.portfolioLenis) window.portfolioLenis.on("scroll", update);
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+  requestAnimationFrame(update);
+  setTimeout(update, 300);
 }
 
 /* ================================================================= */
@@ -512,6 +417,134 @@ function initImpactCounter() {
     const obs = new MutationObserver(tryRun);
     obs.observe(revealEl, { attributes: true, attributeFilter: ["class"] });
   });
+}
+
+/* ================================================================= */
+/*  PORTRAIT HOVER — zoom + hover counter                            */
+/* ================================================================= */
+function initPortraitHover() {
+  const card = document.querySelector(".ascii-portrait-card");
+  const countEl = document.getElementById("portraitHoverCount");
+  if (!card || !countEl) return;
+
+  const KEY = "portfolioPortraitHovers";
+  let count = 0;
+  try {
+    count = parseInt(localStorage.getItem(KEY) || "0", 10) || 0;
+  } catch (e) {
+    count = 0;
+  }
+  countEl.textContent = String(count);
+
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+
+  function bump() {
+    count += 1;
+    countEl.textContent = String(count);
+    try {
+      localStorage.setItem(KEY, String(count));
+    } catch (e) { /* ignore quota / private mode */ }
+  }
+
+  if (coarse) {
+    card.addEventListener("click", () => {
+      const open = card.classList.toggle("is-hovered");
+      if (open) bump();
+    });
+    document.addEventListener("click", (e) => {
+      if (!card.contains(e.target)) card.classList.remove("is-hovered");
+    });
+    return;
+  }
+
+  card.addEventListener("mouseenter", bump);
+}
+
+/* ================================================================= */
+/*  ASCII PORTRAIT — fit-to-width + line-by-line reveal              */
+/* ================================================================= */
+function initAsciiPortrait() {
+  const card = document.querySelector(".ascii-portrait-card");
+  const pre = document.querySelector("pre.ascii-portrait");
+  if (!card || !pre) return;
+
+  const COLS = 69;
+  const LINE_MS = 30;
+  let started = false;
+  let timers = [];
+
+  /* wrap each line once */
+  const raw = pre.textContent.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  let parts = raw.split("\n");
+  if (parts.length && parts[parts.length - 1] === "") parts = parts.slice(0, -1);
+  pre.textContent = "";
+  const lines = parts.map((text) => {
+    const span = document.createElement("span");
+    span.className = "ascii-line";
+    span.textContent = text + "\n";
+    pre.appendChild(span);
+    return span;
+  });
+
+  function fit() {
+    const style = getComputedStyle(card);
+    const padX =
+      (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
+    const available = Math.max(0, card.clientWidth - padX);
+    if (available <= 0) return;
+
+    const probe = document.createElement("span");
+    probe.style.cssText =
+      "position:absolute;visibility:hidden;pointer-events:none;white-space:pre;" +
+      "font-family:var(--mono);font-size:100px;letter-spacing:0;line-height:1;";
+    probe.textContent = "M";
+    document.body.appendChild(probe);
+    const unit = probe.getBoundingClientRect().width / 100;
+    document.body.removeChild(probe);
+    if (!(unit > 0)) return;
+
+    const size = available / (COLS * unit);
+    pre.style.fontSize = size + "px";
+  }
+
+  function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function resetLines() {
+    clearTimers();
+    lines.forEach((span) => { span.style.opacity = "0"; });
+    started = false;
+  }
+
+  function reveal() {
+    if (started) return;
+    started = true;
+    clearTimers();
+
+    if (REDUCED) {
+      lines.forEach((span) => { span.style.opacity = "1"; });
+      return;
+    }
+
+    lines.forEach((span, i) => {
+      span.style.opacity = "0";
+      const id = setTimeout(() => { span.style.opacity = "1"; }, i * LINE_MS);
+      timers.push(id);
+    });
+  }
+
+  function onClass() {
+    if (card.classList.contains("in")) reveal();
+    else resetLines();
+  }
+
+  fit();
+  window.addEventListener("resize", fit);
+  onClass();
+  const obs = new MutationObserver(onClass);
+  obs.observe(card, { attributes: true, attributeFilter: ["class"] });
 }
 
 function initAnchors(lenis) {
@@ -596,25 +629,18 @@ window.portfolioAboutReveal = (function () {
     headingTimers.forEach(clearTimeout);
     headingTimers = [];
     const headings = document.querySelectorAll("#about .heading-decode[data-decode]");
-    headings.forEach((el, i) => {
-      if (REDUCED) {
-        el.textContent = el.getAttribute("data-decode");
-        return;
-      }
-      const id = setTimeout(() => {
-        new Scrambler(el, { text: el.getAttribute("data-decode"), seq: true, speed: 26, settle: 2 }).run();
-      }, i * 100);
-      headingTimers.push(id);
+    headings.forEach((el) => {
+      const text = el.getAttribute("data-decode");
+      if (text) el.textContent = text;
     });
   }
 
   function revealAboutEls() {
-    const els = document.querySelectorAll("#about .reveal:not(.about-timeline-item)");
+    const els = document.querySelectorAll("#about .reveal");
     revealTimers.forEach(clearTimeout);
     revealTimers = [];
     if (REDUCED) {
       els.forEach((r) => r.classList.add("in"));
-      document.querySelectorAll("#about .about-timeline-item.reveal").forEach((r) => r.classList.add("in"));
       return;
     }
     els.forEach((r, i) => {
@@ -627,9 +653,7 @@ window.portfolioAboutReveal = (function () {
     seed() {
       if (seeded || REDUCED) return;
       seeded = true;
-      document.querySelectorAll("#about .heading-decode[data-decode]").forEach((el) => {
-        el.textContent = "";
-      });
+      /* headings keep their real text — no scramble blank */
     },
     decode() {
       if (decoded) return;
@@ -655,7 +679,8 @@ window.portfolioAboutReveal = (function () {
       if (about) about.classList.remove("about-visible");
       document.querySelectorAll("#about .reveal").forEach((r) => r.classList.remove("in"));
       document.querySelectorAll("#about .heading-decode[data-decode]").forEach((el) => {
-        el.textContent = "";
+        const text = el.getAttribute("data-decode");
+        if (text) el.textContent = text;
       });
     },
   };
@@ -675,18 +700,71 @@ function initReducedFallback() {
 }
 
 /* ================================================================= */
-/*  PROJECT CARDS — expand / minimize descriptions                   */
+/*  PROJECT INDEX — directory rows (hover / focus / tap)             */
 /* ================================================================= */
-function initProjectToggles() {
-  document.querySelectorAll(".proj-card").forEach((card) => {
-    const wrap = card.querySelector(".proj-desc-wrap");
-    const btn = card.querySelector(".proj-toggle");
-    if (!wrap || !btn) return;
+function initProjectIndex() {
+  "use strict";
+  const rows = Array.from(document.querySelectorAll(".proj-row"));
+  if (!rows.length) return;
 
-    btn.addEventListener("click", () => {
-      const isCollapsed = wrap.classList.toggle("is-collapsed");
-      btn.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
-      btn.setAttribute("aria-label", isCollapsed ? "Expand description" : "Minimize description");
+  const coarseMq = window.matchMedia("(pointer: coarse)");
+  let openRow = null;
+  let openSource = null;
+
+  function closeRow(row) {
+    if (!row) return;
+    row.classList.remove("is-open");
+    row.setAttribute("aria-expanded", "false");
+    if (openRow === row) {
+      openRow = null;
+      openSource = null;
+    }
+  }
+
+  function openRowEl(row, source) {
+    if (openRow && openRow !== row) closeRow(openRow);
+    row.classList.add("is-open");
+    row.setAttribute("aria-expanded", "true");
+    openRow = row;
+    openSource = source;
+  }
+
+  rows.forEach((row) => {
+    let wasOpenOnPointerDown = false;
+
+    row.addEventListener("pointerdown", () => {
+      wasOpenOnPointerDown = row.classList.contains("is-open");
+    });
+
+    row.addEventListener("mouseenter", () => {
+      if (coarseMq.matches) return;
+      openRowEl(row, "hover");
+    });
+
+    row.addEventListener("mouseleave", () => {
+      if (coarseMq.matches) return;
+      if (openSource !== "hover" || openRow !== row) return;
+      if (row.contains(document.activeElement)) {
+        openSource = "focus";
+        return;
+      }
+      closeRow(row);
+    });
+
+    row.addEventListener("focusin", () => {
+      openRowEl(row, "focus");
+    });
+
+    row.addEventListener("focusout", (e) => {
+      if (row.contains(e.relatedTarget)) return;
+      if (openSource === "focus" && openRow === row) closeRow(row);
+    });
+
+    row.addEventListener("click", (e) => {
+      if (!coarseMq.matches) return;
+      if (wasOpenOnPointerDown) return;
+      e.preventDefault();
+      openRowEl(row, "tap");
     });
   });
 }
@@ -727,7 +805,7 @@ function initCursor() {
   document.addEventListener("mouseleave", () => { cell.style.opacity = "0"; dot.style.opacity = "0"; });
   document.addEventListener("mouseenter", () => { cell.style.opacity = ""; dot.style.opacity = ""; });
 
-  const HOT = "a, button, [data-link], .proj-live, .proj-toggle, .skill-card-link, .social, input, textarea";
+  const HOT = "a, button, [data-link], .skill-card-link, .social, input, textarea";
   document.addEventListener("mouseover", (e) => {
     if (e.target.closest && e.target.closest(HOT)) root.classList.add("cursor-hot");
   });
@@ -752,12 +830,14 @@ document.addEventListener("DOMContentLoaded", () => {
   initNav();
   initLenis();
   initScrollProgress();
-  initAboutTimelineScroll();
+  initExpMeter();
   initImpactCounter();
+  initAsciiPortrait();
+  initPortraitHover();
   initTypewriter();
   initReveals();
-  initProjectToggles();
+  initProjectIndex();
   initReducedFallback();
   initCursor();
-  initHeroTitle();   // last — triggers scroll lock + hero-scroll wiring
+  initHeroTitle();   // last — wires hero-scroll immediately
 });

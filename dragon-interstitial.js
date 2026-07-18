@@ -23,6 +23,11 @@
   ];
   /* ——— end frozen ——— */
 
+  const EXIT_SOFT = 0.88; // NEW: u where facing begins easing into the exit direction
+  const LIMB_RIDE = true;       // NEW: off-axis appendages ride their parent instead of sampling the path frame
+  const LIMB_PERP_FRAC = 0.05;  // NEW: bind offset from the spine (fraction of spine length) above which a bone is an appendage
+  const DEBUG_LIMB = true;      // NEW: log which bones are treated as appendages
+
   const FRAME_SAMPLES = 480;
   const FLIP = 1;
   const INK = 0x1a1a1a;
@@ -52,6 +57,8 @@
   let mats = [];
   let bones = [];
   let bindData = null;
+  let limbSet = null;
+  let limbLocal = null;
   let axisIdx = 2;
   let sMin = 0;
   let sMax = 1;
@@ -61,6 +68,7 @@
 
   const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const ramp = (p, a, b) => clamp01((p - a) / (b - a));
+  const smoother = (t) => t * t * t * (t * (t * 6 - 15) + 10);
   /* 1.35 = design-reviewed travel easing; 2.0 was too hot in the back half. */
   const easeIn = (t) => Math.pow(t, 1.35);
 
@@ -93,6 +101,8 @@
       m.makeBasis(x, y, z);
       quats.push(new THREE.Quaternion().setFromRotationMatrix(m));
     }
+    exitTangent.copy(frames.tangents[FRAME_SAMPLES]).normalize();
+    exitQuat.copy(quats[FRAME_SAMPLES]);
     bankTable = new Float32Array(FRAME_SAMPLES + 1);
     for (let i = 0; i < FRAME_SAMPLES; i++) {
       const a = frames.tangents[i];
@@ -120,6 +130,8 @@
   const _endT0 = new THREE.Vector3();
   const _endP1 = new THREE.Vector3();
   const _endT1 = new THREE.Vector3();
+  const exitTangent = new THREE.Vector3();
+  const exitQuat = new THREE.Quaternion();
 
   function pointAtExt(u, out) {
     if (u >= 0 && u <= 1) return flight.getPointAt(u, out);
@@ -129,14 +141,18 @@
       return out.copy(_endP0).addScaledVector(_endT0, u * curveLen);
     }
     flight.getPointAt(1, _endP1);
-    flight.getTangentAt(0.999, _endT1);
-    return out.copy(_endP1).addScaledVector(_endT1, (u - 1) * curveLen);
+    return out.copy(_endP1).addScaledVector(exitTangent, (u - 1) * curveLen);
   }
 
   function frameQuatAt(u, out) {
-    const f = Math.max(0, Math.min(0.99999, u)) * FRAME_SAMPLES;
+    const uc = Math.max(0, Math.min(0.99999, u));
+    const f = uc * FRAME_SAMPLES;
     const i = Math.floor(f);
     out.copy(quats[i]).slerp(quats[Math.min(i + 1, FRAME_SAMPLES)], f - i);
+    if (u >= EXIT_SOFT) {
+      const t = smoother(clamp01((Math.min(u, 1) - EXIT_SOFT) / (1 - EXIT_SOFT)));
+      out.slerp(exitQuat, t);
+    }
     return out;
   }
 
@@ -212,6 +228,50 @@
     const others = [0, 1, 2].filter((a) => a !== axisIdx);
     cA = (mn.getComponent(others[0]) + mx.getComponent(others[0])) / 2;
     cB = (mn.getComponent(others[1]) + mx.getComponent(others[1])) / 2;
+
+    // --- NEW: classify off-axis appendage bones and precompute their bind-local transforms ---
+    limbSet = new Set();
+    limbLocal = new Map();
+    if (LIMB_RIDE) {
+      const othersB = [0, 1, 2].filter((a) => a !== axisIdx);
+      const spineLenB = sMax - sMin;
+      const composeBind = (b) => {
+        const d = bindMap.get(b);
+        return new THREE.Matrix4().compose(d.p, d.q, d.sc);
+      };
+      bones.forEach((b) => {
+        const d = bindMap.get(b);
+        if (!d) return;
+        const parent = b.parent;
+        if (!bindMap.has(parent)) return; // chain roots stay path-driven so the body still anchors to the flight
+        const perp = Math.hypot(
+          d.p.getComponent(othersB[0]) - cA,
+          d.p.getComponent(othersB[1]) - cB
+        );
+        if (perp > LIMB_PERP_FRAC * spineLenB) {
+          limbSet.add(b);
+          limbLocal.set(
+            b,
+            new THREE.Matrix4().copy(composeBind(parent)).invert().multiply(composeBind(b))
+          );
+        }
+      });
+      if (DEBUG_LIMB) {
+        const rows = [];
+        bones.forEach((b) => {
+          if (!limbSet.has(b)) return;
+          const d = bindMap.get(b);
+          const sN = (sMax - d.p.getComponent(axisIdx)) / (sMax - sMin);
+          const perp = Math.hypot(
+            d.p.getComponent([0, 1, 2].filter((a) => a !== axisIdx)[0]) - cA,
+            d.p.getComponent([0, 1, 2].filter((a) => a !== axisIdx)[1]) - cB
+          );
+          rows.push({ name: b.name, parent: b.parent && b.parent.name, sN: +sN.toFixed(3), perp: Math.round(perp) });
+        });
+        console.log("[dragon] appendage bones (ride parent):", limbSet.size, "of", bones.length);
+        console.table(rows);
+      }
+    }
   }
 
   /* ---------------------------------------------- update ----------- */
@@ -231,6 +291,7 @@
   const vScl = new THREE.Vector3();
   const mDesired = new THREE.Matrix4();
   const mParentInv = new THREE.Matrix4();
+  const mLimbWorld = new THREE.Matrix4();
 
   function setFade(vis) {
     const fading = vis < 0.999;
@@ -265,6 +326,16 @@
         const bone = bones[i];
         const bd = bindData.get(bone);
         if (!bd) continue;
+
+        if (limbSet && limbSet.has(bone)) {
+          const bl = limbLocal.get(bone);
+          const parent = bone.parent;
+          const pw = updatedWorld.get(parent) || parent.matrixWorld;
+          bone.matrix.copy(bl);
+          bone.matrix.decompose(bone.position, bone.quaternion, bone.scale);
+          updatedWorld.set(bone, mLimbWorld.multiplyMatrices(pw, bl).clone());
+          continue;
+        }
 
         const sRaw = bd.p.getComponent(axisIdx);
         const s = FLIP > 0 ? sRaw : sMin + sMax - sRaw;

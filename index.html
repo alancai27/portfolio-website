@@ -23,7 +23,7 @@
 
       <nav class="nav-links" aria-label="Primary">
         <a href="#about" data-link><span class="nav-link-text">About</span></a>
-        <a href="#projects" data-link><span class="nav-link-text">Projects</span></a>
+        <a href="#projects" data-link><span class="nav-link-text">Featured Projects</span></a>
         <a href="#skills" data-link><span class="nav-link-text">My Arsenal</span></a>
         <a href="#contact" data-link><span class="nav-link-text">Contact</span></a>
       </nav>
@@ -36,7 +36,7 @@
 
     <nav class="nav-mobile" id="navMobile" aria-label="Mobile">
       <a href="#about" data-link>About</a>
-      <a href="#projects" data-link>Projects</a>
+      <a href="#projects" data-link>Featured Projects</a>
       <a href="#skills" data-link>My Arsenal</a>
       <a href="#contact" data-link>Contact</a>
     </nav>
@@ -100,12 +100,11 @@
     <!-- ===================================================== ABOUT -->
     <section class="section hero-about-target" id="about" data-screen-label="ABOUT">
       <div class="container">
-        <div class="about-grid">
-          <h2 class="about-heading reveal heading-decode" data-decode="About Me">About Me</h2>
-          <h3 class="about-side-title reveal heading-decode" data-decode="EXPERIENCE">EXPERIENCE</h3>
-          <div class="about-main">
+        <h2 class="about-heading reveal heading-decode" data-decode="About Me">About Me</h2>
+
+        <div class="about-main">
+          <div class="about-copy">
             <p class="about-body reveal">Hi! I'm Alan, a 17-year-old full-stack developer at the North Carolina School of Science and Mathematics. I love building technology that creates real-world impact, especially in education and community-focused initiatives.</p>
-            <p class="about-body reveal">Some of my interests include machine learning, web development, cybersecurity but the common theme behind all of my projects is using technology to solve meaningful problems. I love turning code into something that helps others.</p>
             <p class="about-body reveal">I'm always exploring new opportunities to learn, build, and collaborate on projects that can improve people's lives, even at the local-level!</p>
             <div class="about-impact-row reveal">
               <div class="about-impact">
@@ -118,180 +117,214 @@
               </div>
             </div>
           </div>
+          <figure class="ascii-portrait-card reveal">
+            <div class="about-portrait-frame">
+              <img class="about-portrait" src="assets/alan.jpg" alt="Portrait of Alan Cai" width="1024" height="1016" loading="lazy" decoding="async">
+              <figcaption class="about-portrait-hover">
+                Number of times hovered over: <span class="about-portrait-count" id="portraitHoverCount">0</span>
+              </figcaption>
+            </div>
+          </figure>
+        </div>
 
-          <!-- RIGHT -->
-          <aside class="about-side">
-            <div class="about-timeline-viewport">
-              <div class="about-timeline-track">
-            <ol class="about-timeline">
-              <li class="about-timeline-item reveal">
-                <span class="tl-year">APR 2026 - PRESENT</span>
-                <span class="tl-role">Computer Science TA</span>
-                <span class="tl-org">NCSSM</span>
-                <span class="tl-desc">One of four CS TAs selected each year to help students with their classes, specifically CS4200 Cryptography and CS4230 Networks and the Web.</span>
+        <section class="exp" aria-label="Experience">
+          <h3 class="exp-label">EXPERIENCE</h3>
+          <div class="exp-timeline">
+            <div class="exp-rail" aria-hidden="true"><span class="exp-rail-fill"></span></div>
+            <ol class="exp-list">
+              <li class="exp-card reveal">
+                <span class="exp-year">APR 2026 - PRESENT</span>
+                <h4 class="exp-role">Computer Science TA</h4>
+                <span class="exp-org">NCSSM</span>
+                <p class="exp-desc">One of four CS TAs selected each year to help students with their classes, specifically CS4200 Cryptography and CS4230 Networks and the Web.</p>
               </li>
-              <li class="about-timeline-item reveal">
-                <span class="tl-year">MAR 2026 - PRESENT</span>
-                <span class="tl-role">Student Researcher</span>
-                <span class="tl-org">NC State RTIS Lab</span>
-                <span class="tl-desc">Working under Dr. Zhishan Guo and alongside graduate students on autonomous driving research, with interests in real-time scheduling, ROS 2, and machine learning.</span>
+              <li class="exp-card reveal">
+                <span class="exp-year">MAR 2026 - PRESENT</span>
+                <h4 class="exp-role">Student Researcher</h4>
+                <span class="exp-org">NC State RTIS Lab</span>
+                <p class="exp-desc">Working under Dr. Zhishan Guo and alongside graduate students on autonomous driving research, with interests in real-time scheduling, ROS 2, and machine learning.</p>
               </li>
-              <li class="about-timeline-item reveal">
-                <span class="tl-year">JAN 2026 - PRESENT</span>
-                <span class="tl-role">Co-Founder</span>
-                <span class="tl-org">Haku</span>
-                <span class="tl-desc">Co-founded Haku, a competitive Speech and Debate search engine that lets users access over 2 million evidence cards in seconds. Collaborating with international debate organizations and Kankee Briefs.</span>
+              <li class="exp-card reveal">
+                <span class="exp-year">JAN 2026 - PRESENT</span>
+                <h4 class="exp-role">Co-Founder</h4>
+                <a class="exp-org" href="https://haku.cards" target="_blank" rel="noopener">Haku <span class="tk" aria-hidden="true">→</span></a>
+                <p class="exp-desc">Co-founded Haku, a competitive Speech and Debate search engine that lets users access over 2 million evidence cards in seconds. Collaborating with international debate organizations and Kankee Briefs.</p>
               </li>
-              <li class="about-timeline-item reveal">
-                <span class="tl-year">FEB 2025 - PRESENT</span>
-                <span class="tl-role">Developer</span>
-                <span class="tl-org">Scio.ly
-</span>
-                <span class="tl-desc">Helped create Scio.ly, a Science Olympiad platform providing resources, analytics, and other features to competitors. Partnered with Southern California SO and recognized by the vice president of the national board.</span>
+              <li class="exp-card reveal">
+                <span class="exp-year">FEB 2025 - PRESENT</span>
+                <h4 class="exp-role">Developer</h4>
+                <a class="exp-org" href="https://scio.ly" target="_blank" rel="noopener">Scio.ly <span class="tk" aria-hidden="true">→</span></a>
+                <p class="exp-desc">Helped create Scio.ly, a Science Olympiad platform providing resources, analytics, and other features to competitors. Partnered with Southern California SO and recognized by the vice president of the national board.</p>
               </li>
-              <li class="about-timeline-item reveal">
-                <span class="tl-year">AUG 2025 - DEC 2025</span>
-                <span class="tl-role">Founder &amp; Project Lead</span>
-                <span class="tl-org">Carnegie Ventures</span>
-                <span class="tl-desc">Developed a smart buoy system using hydrophones and machine learning to identify fish species from underwater vocalizations, aimed at detecting overfishing and supporting endangered species protection. </span>
+              <li class="exp-card reveal">
+                <span class="exp-year">AUG 2025 - DEC 2025</span>
+                <h4 class="exp-role">Founder &amp; Project Lead</h4>
+                <span class="exp-org">Carnegie Ventures</span>
+                <p class="exp-desc">Developed a smart buoy system using hydrophones and machine learning to identify fish species from underwater vocalizations, aimed at detecting overfishing and supporting endangered species protection.</p>
               </li>
             </ol>
-              </div>
-            </div>
-          </aside>
-        </div>
+          </div>
+        </section>
       </div>
     </section>
 
     <!-- ===================================================== PROJECTS -->
-    <section class="section" id="projects" data-screen-label="PROJECTS">
+    <section class="section" id="projects" data-screen-label="FEATURED PROJECTS">
       <div class="container">
-        <h2 class="projects-heading reveal heading-decode" data-decode="Projects">Projects</h2>
+        <h2 class="projects-heading reveal heading-decode" data-decode="Featured Projects">Featured Projects</h2>
 
-        <div class="projects-catalog">
-          <article class="proj-card reveal" data-delay="1">
-            <div class="proj-body">
-              <div class="proj-header">
-                <h4 class="proj-title">L.I.O.N.</h4>
-                <p class="proj-subtitle">Live Invasive-species Observation Network</p>
+        <div class="proj-index" role="list">
+          <div class="proj-index-head" aria-hidden="true">
+            <span>IDX</span><span>PREVIEW</span><span>PROJECT</span><span>STACK</span><span></span>
+          </div>
+          <a class="proj-row reveal" role="listitem" href="https://provide-nc.org" target="_blank" rel="noopener" aria-expanded="false">
+            <span class="proj-row-idx">01</span>
+            <span class="proj-row-snap">
+              <img src="assets/projects/provide.png" alt="" loading="lazy">
+            </span>
+            <span class="proj-row-name">Provide</span>
+            <span class="proj-row-stack" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla front-end map and search UI" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/leaflet/199900" alt="Leaflet" title="Leaflet — interactive web map" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/d3/FF7F0E" alt="D3.js" title="D3.js / TopoJSON — census tract shading and geospatial layers" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/nodedotjs/339933" alt="Node.js" title="Node.js — dataset refresh and maintenance scripts" width="18" height="18" loading="lazy">
+            </span>
+            <span class="proj-row-arrow tk" aria-hidden="true">→</span>
+                        <div class="proj-row-detail">
+              <p class="proj-row-desc">Provide is a free, public web map that helps North Carolina residents find SNAP retailers, food pantries, free meal sites, and WIC clinics near any address or ZIP code, overlaying USDA food-access data and NC transit routes to show both resources and structural barriers at once. Built as a no-backend static site, it queries live public APIs (USDA FNS, NC 211, Feeding America) at search time with bundled JSON caches as CORS fallbacks and Nominatim geocoding. Node maintenance scripts refresh each dataset, parsing the NC DHHS WIC directory straight from PDF, deriving statewide GTFS transit, and shading 2,195 census tracts to flag 353 food deserts. Built with vanilla JS, Leaflet, D3/TopoJSON, public civic APIs, and Node data-pipeline scripts.</p>
+              <div class="proj-row-icons" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla front-end map and search UI" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/leaflet/199900" alt="Leaflet" title="Leaflet — interactive web map" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/d3/FF7F0E" alt="D3.js" title="D3.js / TopoJSON — census tract shading and geospatial layers" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/nodedotjs/339933" alt="Node.js" title="Node.js — dataset refresh and maintenance scripts" width="22" height="22" loading="lazy">
               </div>
-              <div class="proj-cover proj-cover--logo">
-                <image-slot id="projLion" class="proj-cover-slot" shape="rect" src="assets/projects/lion.png" fit="contain" frame-bg="#ffffff" placeholder="L.I.O.N"></image-slot>
-              </div>
-              <div class="proj-desc-wrap is-collapsed">
-                <p class="proj-desc">L.I.O.N. is a hybrid reef-monitoring platform that runs underwater footage through YOLO-based detection pipelines to flag invasive species (lionfish, crown-of-thorns) and reef-health indicators, with annotated overlays and exportable detection data. Built with a Next.js front end, a detector-routing API gateway, hosted Roboflow inference, and a remote FastAPI service for heavier models.</p>
-              </div>
-              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
-              <div class="proj-stack" aria-label="Tech stack">
-                <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — the full-stack app: monitoring UI, API gateway, and request routing" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/react/61DAFB" alt="React" title="React — the interactive front end (Live Lab, overlays, dashboard)" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" title="Python — the ML pipeline and detection logic" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/ultralytics/111F68" alt="YOLO (Ultralytics)" title="YOLO (Ultralytics) — the object-detection models for local/remote inference" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/roboflow/6706CE" alt="Roboflow" title="Roboflow — hosted cloud inference for the lionfish and crown-of-thorns lanes" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI" title="FastAPI — the remote reef-health inference service" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/vercel/000000" alt="Vercel" title="Vercel — hosting for the front end + gateway (plus Blob for large uploads)" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker" title="Docker — containerizes the FastAPI service for deployment" width="22" height="22" loading="lazy">
-              </div>
-              <a class="proj-live" href="https://smatchlion.vercel.app/" target="_blank" rel="noopener">VISIT SITE</a>
+              <span class="proj-row-visit">VISIT SITE →</span>
             </div>
-          </article>
 
-          <article class="proj-card reveal" data-delay="2">
-            <div class="proj-body">
-              <div class="proj-header">
-                <h4 class="proj-title">Scio.ly</h4>
-                <p class="proj-subtitle">Science Olympiad Practice Platform</p>
-              </div>
-              <div class="proj-cover proj-cover--logo">
-                <image-slot id="projScio" class="proj-cover-slot" shape="rect" src="assets/projects/scio-ly.png" fit="contain" frame-bg="#ffffff" placeholder="Scio.ly"></image-slot>
-              </div>
-              <div class="proj-desc-wrap is-collapsed">
-                <p class="proj-desc">Scio.ly is a free Science Olympiad practice platform serving a question bank built from 4,000+ past tests, where questions were extracted from raw PDFs using Gemini 3, then normalized and indexed across 23 Division C events with both MCQ and FRQ support. Built on Next.js (App Router handling frontend and backend via route handlers + tRPC) with CockroachDB via Drizzle ORM for persistence, Vercel KV for caching, and Supabase/Google OAuth for auth. Gemini 2.0 powers FRQ grading, on-demand explanation generation, and report processing. Built with TypeScript, Next.js, CockroachDB, Gemini 2.0/3, and Ably.</p>
-              </div>
-              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
-              <div class="proj-stack" aria-label="Tech stack">
-                <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" title="TypeScript — full-stack application logic" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — App Router frontend, route handlers, and tRPC API" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/cockroachlabs/6933FF" alt="CockroachDB" title="CockroachDB — persistence via Drizzle ORM" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" alt="Gemini 2.0/3" title="Gemini 2.0/3 — PDF extraction, FRQ grading, explanations, and report processing" width="22" height="22" loading="lazy">
-                <img src="assets/icons/ably.svg" alt="Ably" title="Ably — real-time collaborative test-sharing" width="22" height="22" loading="lazy">
-              </div>
-              <a class="proj-live" href="https://scio.ly" target="_blank" rel="noopener">VISIT SITE</a>
-            </div>
-          </article>
+          </a>
 
-          <article class="proj-card reveal" data-delay="1">
-            <div class="proj-body">
-              <div class="proj-header">
-                <h4 class="proj-title">Tremora</h4>
-                <p class="proj-subtitle">Wearable Parkinson's Tremor Monitor</p>
+          <a class="proj-row reveal" role="listitem" href="https://scio.ly" target="_blank" rel="noopener" aria-expanded="false">
+            <span class="proj-row-idx">02</span>
+            <span class="proj-row-snap">
+              <img src="assets/projects/scio-ly.png" alt="" loading="lazy">
+            </span>
+            <span class="proj-row-name">Scio.ly</span>
+            <span class="proj-row-stack" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" title="TypeScript — full-stack application logic" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — App Router frontend, route handlers, and tRPC API" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/cockroachlabs/6933FF" alt="CockroachDB" title="CockroachDB — persistence via Drizzle ORM" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" alt="Gemini 2.0/3" title="Gemini 2.0/3 — PDF extraction, FRQ grading, explanations, and report processing" width="18" height="18" loading="lazy">
+              <img src="assets/icons/ably.svg" alt="Ably" title="Ably — real-time collaborative test-sharing" width="18" height="18" loading="lazy">
+            </span>
+            <span class="proj-row-arrow tk" aria-hidden="true">→</span>
+                        <div class="proj-row-detail">
+              <p class="proj-row-desc">Scio.ly is a free Science Olympiad practice platform serving a question bank built from 4,000+ past tests, where questions were extracted from raw PDFs using Gemini 3, then normalized and indexed across 23 Division C events with both MCQ and FRQ support. Built on Next.js (App Router handling frontend and backend via route handlers + tRPC) with CockroachDB via Drizzle ORM for persistence, Vercel KV for caching, and Supabase/Google OAuth for auth. Gemini 2.0 powers FRQ grading, on-demand explanation generation, and report processing. Built with TypeScript, Next.js, CockroachDB, Gemini 2.0/3, and Ably.</p>
+              <div class="proj-row-icons" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" title="TypeScript — full-stack application logic" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — App Router frontend, route handlers, and tRPC API" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/cockroachlabs/6933FF" alt="CockroachDB" title="CockroachDB — persistence via Drizzle ORM" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" alt="Gemini 2.0/3" title="Gemini 2.0/3 — PDF extraction, FRQ grading, explanations, and report processing" width="22" height="22" loading="lazy">
+              <img src="assets/icons/ably.svg" alt="Ably" title="Ably — real-time collaborative test-sharing" width="22" height="22" loading="lazy">
               </div>
-              <div class="proj-cover proj-cover--logo proj-cover--wordmark">
-                <p class="proj-wordmark" aria-hidden="true">Tremora<span class="proj-wordmark-dot">.</span></p>
-              </div>
-              <div class="proj-desc-wrap is-collapsed">
-                <p class="proj-desc">Tremora is a wrist-worn wearable that continuously monitors Parkinson's tremors and scores severity in real time against a proxy of the clinical MDS-UPDRS scale, replacing the ~1 hour of episodic clinical data patients get per year with 24/7 longitudinal monitoring. An ESP32 reads a MPU-6050 IMU at 200Hz, applying a per-axis IIR high-pass filter and a 256-sample Hamming-windowed FFT to extract tremor frequency and amplitude in the 3–12Hz band. A Random Forest classifier trained on PhysioNet recordings runs in parallel, and a physical medication-timing button timestamps doses so a Chart.js dashboard can plot severity before and after each one. Built with C++/Arduino firmware, ESP32, FFT/IIR signal processing, scikit-learn, and a vanilla-JS dashboard.</p>
-              </div>
-              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
-              <div class="proj-stack" aria-label="Tech stack">
-                <img src="https://cdn.simpleicons.org/cplusplus/00599C" alt="C++" title="C++ — on-device signal processing and exported Random Forest inference" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/arduino/00878F" alt="Arduino" title="Arduino — ESP32 firmware platform" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/scikitlearn/F7931E" alt="scikit-learn" title="scikit-learn — Random Forest training on PhysioNet recordings" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla neurologist dashboard" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/chartdotjs/FF6384" alt="Chart.js" title="Chart.js — tremor severity plots before and after medication doses" width="22" height="22" loading="lazy">
-              </div>
-              <a class="proj-live" href="https://tremora.health" target="_blank" rel="noopener">VISIT SITE</a>
+              <span class="proj-row-visit">VISIT SITE →</span>
             </div>
-          </article>
 
-          <article class="proj-card reveal" data-delay="2">
-            <div class="proj-body">
-              <div class="proj-header">
-                <h4 class="proj-title">Provide</h4>
-                <p class="proj-subtitle">NC Food-Access Map</p>
-              </div>
-              <div class="proj-cover proj-cover--logo proj-cover--static">
-                <img class="proj-cover-img" src="assets/projects/provide.png" alt="Provide" loading="lazy">
-              </div>
-              <div class="proj-desc-wrap is-collapsed">
-                <p class="proj-desc">Provide is a free, public web map that helps North Carolina residents find SNAP retailers, food pantries, free meal sites, and WIC clinics near any address or ZIP code, overlaying USDA food-access data and NC transit routes to show both resources and structural barriers at once. Built as a no-backend static site, it queries live public APIs (USDA FNS, NC 211, Feeding America) at search time with bundled JSON caches as CORS fallbacks and Nominatim geocoding. Node maintenance scripts refresh each dataset, parsing the NC DHHS WIC directory straight from PDF, deriving statewide GTFS transit, and shading 2,195 census tracts to flag 353 food deserts. Built with vanilla JS, Leaflet, D3/TopoJSON, public civic APIs, and Node data-pipeline scripts.</p>
-              </div>
-              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
-              <div class="proj-stack" aria-label="Tech stack">
-                <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla front-end map and search UI" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/leaflet/199900" alt="Leaflet" title="Leaflet — interactive web map" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/d3/FF7F0E" alt="D3.js" title="D3.js / TopoJSON — census tract shading and geospatial layers" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/nodedotjs/339933" alt="Node.js" title="Node.js — dataset refresh and maintenance scripts" width="22" height="22" loading="lazy">
-              </div>
-              <a class="proj-live" href="https://provide-nc.org" target="_blank" rel="noopener">VISIT SITE</a>
-            </div>
-          </article>
+          </a>
 
-          <article class="proj-card reveal" data-delay="3">
-            <div class="proj-body">
-              <div class="proj-header">
-                <h4 class="proj-title">Haku</h4>
-                <p class="proj-subtitle">Competitive Speech and Debate Search Engine</p>
+          <a class="proj-row reveal" role="listitem" href="https://tremora.health" target="_blank" rel="noopener" aria-expanded="false">
+            <span class="proj-row-idx">03</span>
+            <span class="proj-row-snap proj-row-snap--wordmark">
+              <span class="proj-row-wordmark" aria-hidden="true">Tremora<span class="proj-row-wordmark-dot">.</span></span>
+            </span>
+            <span class="proj-row-name">Tremora</span>
+            <span class="proj-row-stack" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/cplusplus/00599C" alt="C++" title="C++ — on-device signal processing and exported Random Forest inference" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/arduino/00878F" alt="Arduino" title="Arduino — ESP32 firmware platform" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/scikitlearn/F7931E" alt="scikit-learn" title="scikit-learn — Random Forest training on PhysioNet recordings" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla neurologist dashboard" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/chartdotjs/FF6384" alt="Chart.js" title="Chart.js — tremor severity plots before and after medication doses" width="18" height="18" loading="lazy">
+            </span>
+            <span class="proj-row-arrow tk" aria-hidden="true">→</span>
+                        <div class="proj-row-detail">
+              <p class="proj-row-desc">Tremora is a wrist-worn wearable that continuously monitors Parkinson's tremors and scores severity in real time against a proxy of the clinical MDS-UPDRS scale, replacing the ~1 hour of episodic clinical data patients get per year with 24/7 longitudinal monitoring. An ESP32 reads a MPU-6050 IMU at 200Hz, applying a per-axis IIR high-pass filter and a 256-sample Hamming-windowed FFT to extract tremor frequency and amplitude in the 3–12Hz band. A Random Forest classifier trained on PhysioNet recordings runs in parallel, and a physical medication-timing button timestamps doses so a Chart.js dashboard can plot severity before and after each one. Built with C++/Arduino firmware, ESP32, FFT/IIR signal processing, scikit-learn, and a vanilla-JS dashboard.</p>
+              <div class="proj-row-icons" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/cplusplus/00599C" alt="C++" title="C++ — on-device signal processing and exported Random Forest inference" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/arduino/00878F" alt="Arduino" title="Arduino — ESP32 firmware platform" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/scikitlearn/F7931E" alt="scikit-learn" title="scikit-learn — Random Forest training on PhysioNet recordings" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" title="JavaScript — vanilla neurologist dashboard" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/chartdotjs/FF6384" alt="Chart.js" title="Chart.js — tremor severity plots before and after medication doses" width="22" height="22" loading="lazy">
               </div>
-              <div class="proj-cover proj-cover--logo">
-                <image-slot id="projHaku" class="proj-cover-slot" shape="rect" src="assets/projects/haku.png" fit="contain" frame-bg="#ffffff" placeholder="Haku"></image-slot>
-              </div>
-              <div class="proj-desc-wrap is-collapsed">
-                <p class="proj-desc">Haku is a debate card search engine that indexes ~3.5 million pieces of competitive debate evidence from openCaselist (2013–2026), letting debaters filter by year, event, school, team, side, tournament, and round. A Rust ingest engine parses raw DOCX evidence into structured cards, a Python layer handles dedupe and indexing, and a staged pipeline imports everything into Meilisearch with rich card payloads checkpointed to SQLite for fast hydration at serve time. The system also supports paid collaborative team workspaces, shared libraries, and case-building tools. Built with Rust, Python, TypeScript, Next.js, Meilisearch, and SQLite/Postgres.</p>
-              </div>
-              <button type="button" class="proj-toggle" aria-expanded="false" aria-label="Expand description"><span class="proj-toggle-icon" aria-hidden="true">↓</span></button>
-              <div class="proj-stack" aria-label="Tech stack">
-                <img src="https://cdn.simpleicons.org/rust/000000" alt="Rust" title="Rust — ingest engine for parsing DOCX evidence into structured cards" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" title="Python — dedupe, indexing, and pipeline orchestration" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" title="TypeScript — application logic and type-safe front-end code" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — full-stack web app framework" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" alt="Meilisearch" title="Meilisearch — search index for card retrieval" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/sqlite/003B57" alt="SQLite" title="SQLite — checkpointed hydration store at serve time" width="22" height="22" loading="lazy">
-                <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" title="PostgreSQL — production database" width="22" height="22" loading="lazy">
-              </div>
-              <a class="proj-live" href="https://haku.cards" target="_blank" rel="noopener">VISIT SITE</a>
+              <span class="proj-row-visit">VISIT SITE →</span>
             </div>
-          </article>
+
+          </a>
+
+          <a class="proj-row reveal" role="listitem" href="https://haku.cards" target="_blank" rel="noopener" aria-expanded="false">
+            <span class="proj-row-idx">04</span>
+            <span class="proj-row-snap">
+              <img src="assets/projects/haku.png" alt="" loading="lazy">
+            </span>
+            <span class="proj-row-name">Haku</span>
+            <span class="proj-row-stack" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/rust/000000" alt="Rust" title="Rust — ingest engine for parsing DOCX evidence into structured cards" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" title="Python — dedupe, indexing, and pipeline orchestration" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" title="TypeScript — application logic and type-safe front-end code" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — full-stack web app framework" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" alt="Meilisearch" title="Meilisearch — search index for card retrieval" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/sqlite/003B57" alt="SQLite" title="SQLite — checkpointed hydration store at serve time" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" title="PostgreSQL — production database" width="18" height="18" loading="lazy">
+            </span>
+            <span class="proj-row-arrow tk" aria-hidden="true">→</span>
+                        <div class="proj-row-detail">
+              <p class="proj-row-desc">Haku is a debate card search engine that indexes ~3.5 million pieces of competitive debate evidence from openCaselist (2013–2026), letting debaters filter by year, event, school, team, side, tournament, and round. A Rust ingest engine parses raw DOCX evidence into structured cards, a Python layer handles dedupe and indexing, and a staged pipeline imports everything into Meilisearch with rich card payloads checkpointed to SQLite for fast hydration at serve time. The system also supports paid collaborative team workspaces, shared libraries, and case-building tools. Built with Rust, Python, TypeScript, Next.js, Meilisearch, and SQLite/Postgres.</p>
+              <div class="proj-row-icons" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/rust/000000" alt="Rust" title="Rust — ingest engine for parsing DOCX evidence into structured cards" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" title="Python — dedupe, indexing, and pipeline orchestration" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" title="TypeScript — application logic and type-safe front-end code" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — full-stack web app framework" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" alt="Meilisearch" title="Meilisearch — search index for card retrieval" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/sqlite/003B57" alt="SQLite" title="SQLite — checkpointed hydration store at serve time" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" title="PostgreSQL — production database" width="22" height="22" loading="lazy">
+              </div>
+              <span class="proj-row-visit">VISIT SITE →</span>
+            </div>
+
+          </a>
+
+          <a class="proj-row reveal" role="listitem" href="https://smatchlion.vercel.app/" target="_blank" rel="noopener" aria-expanded="false">
+            <span class="proj-row-idx">05</span>
+            <span class="proj-row-snap">
+              <img src="assets/projects/lion.png" alt="" loading="lazy">
+            </span>
+            <span class="proj-row-name">L.I.O.N.</span>
+            <span class="proj-row-stack" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — the full-stack app: monitoring UI, API gateway, and request routing" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/react/61DAFB" alt="React" title="React — the interactive front end (Live Lab, overlays, dashboard)" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" title="Python — the ML pipeline and detection logic" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/ultralytics/111F68" alt="YOLO (Ultralytics)" title="YOLO (Ultralytics) — the object-detection models for local/remote inference" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/roboflow/6706CE" alt="Roboflow" title="Roboflow — hosted cloud inference for the lionfish and crown-of-thorns lanes" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI" title="FastAPI — the remote reef-health inference service" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/vercel/000000" alt="Vercel" title="Vercel — hosting for the front end + gateway (plus Blob for large uploads)" width="18" height="18" loading="lazy">
+              <img src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker" title="Docker — containerizes the FastAPI service for deployment" width="18" height="18" loading="lazy">
+            </span>
+            <span class="proj-row-arrow tk" aria-hidden="true">→</span>
+                        <div class="proj-row-detail">
+              <p class="proj-row-desc">L.I.O.N. is a hybrid reef-monitoring platform that runs underwater footage through YOLO-based detection pipelines to flag invasive species (lionfish, crown-of-thorns) and reef-health indicators, with annotated overlays and exportable detection data. Built with a Next.js front end, a detector-routing API gateway, hosted Roboflow inference, and a remote FastAPI service for heavier models.</p>
+              <div class="proj-row-icons" aria-label="Tech stack">
+              <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" title="Next.js — the full-stack app: monitoring UI, API gateway, and request routing" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/react/61DAFB" alt="React" title="React — the interactive front end (Live Lab, overlays, dashboard)" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" title="Python — the ML pipeline and detection logic" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/ultralytics/111F68" alt="YOLO (Ultralytics)" title="YOLO (Ultralytics) — the object-detection models for local/remote inference" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/roboflow/6706CE" alt="Roboflow" title="Roboflow — hosted cloud inference for the lionfish and crown-of-thorns lanes" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI" title="FastAPI — the remote reef-health inference service" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/vercel/000000" alt="Vercel" title="Vercel — hosting for the front end + gateway (plus Blob for large uploads)" width="22" height="22" loading="lazy">
+              <img src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker" title="Docker — containerizes the FastAPI service for deployment" width="22" height="22" loading="lazy">
+              </div>
+              <span class="proj-row-visit">VISIT SITE →</span>
+            </div>
+
+          </a>
+
         </div>
       </div>
     </section>
